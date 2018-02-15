@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.views import generic
 
-# Create your views here.
+from .models import Image
+
+
+class DetailView(generic.DetailView):
+    model = Image
+    template_name = 'images/image.html'
