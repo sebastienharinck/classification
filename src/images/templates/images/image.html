@@ -1,1 +1,7 @@
 <img src="{{ image.file.url }}" alt="">
+
+<ul>
+    {% for tag in image.tags.all %}
+        {{ tag.name }}
+    {% endfor %}
+</ul>
