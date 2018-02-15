@@ -4,6 +4,7 @@
 
 src/db.sqlite3
 src/**/__pycache__/
+src/img/
 
 !.gitignore
 !requirements.txt
