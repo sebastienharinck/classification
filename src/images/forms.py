@@ -1,10 +1,15 @@
-from django import forms
+from django.forms import ModelForm
 
-from .models import Image
+from .models import Image, Vote
 
 
-class ImageForm(forms.ModelForm):
+class ImageForm(ModelForm):
     class Meta:
         model = Image
         fields = ['tags']
 
+
+class VoteForm(ModelForm):
+    class Meta:
+        model = Vote
+        fields = ['tags']

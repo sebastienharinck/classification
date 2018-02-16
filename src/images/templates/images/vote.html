@@ -1,0 +1,7 @@
+<form action="{% url 'images:vote' image.id %}" method="POST">
+    {% csrf_token %}
+    {{ form.tags }}
+    <input type="submit" value="Submit">
+</form>
+
+<img src="{{ image.file.url }}" alt="">

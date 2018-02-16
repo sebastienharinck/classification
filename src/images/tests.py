@@ -118,3 +118,14 @@ class ImageTests(TestCase):
         )
 
         self.assertRedirects(response, reverse('images:congratulations'))
+
+    def test_a_user_can_vote(self):
+        pass
+
+    def test_a_user_cant_vote_whitout_login(self):
+        pass
+
+    def test_a_user_cant_vote_twice_on_the_same_image(self):
+        pass
+
+
