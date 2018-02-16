@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 
-from .models import Image, Tag, get_random_image_without_tags
+from .models import Image, Tag
 
 
-class ImageModelTests(TestCase):
+class ImageTests(TestCase):
     def setUp(self):
         Image.objects.create(file='img_a.jpeg')
         Image.objects.create(file='img_b.jpeg')
@@ -32,7 +32,7 @@ class ImageModelTests(TestCase):
 
     def test_homepage_all_images_are_tagged(self):
         """
-        If all images are tagged, a user must see a message and can't start a classification
+        If all images are tagged, a user must see a message and can't start a classification.
         """
         image_a = Image.objects.get(file='img_a.jpeg')
         image_b = Image.objects.get(file='img_b.jpeg')
