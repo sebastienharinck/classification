@@ -1,10 +1,10 @@
 from django import forms
 
-from .models import Tag
+from .models import Image
 
 
-class ImageForm(forms.Form):
-    tags = forms.MultipleChoiceField(
-        choices=Tag.objects.all().values_list('id', 'name'),
-        widget=forms.CheckboxSelectMultiple,
-    )
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ['tags']
+

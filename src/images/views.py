@@ -1,5 +1,4 @@
 from django.views import generic
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from .models import Image
@@ -15,10 +14,10 @@ def add_tags(request, pk):
     image = Image.objects.get(pk=pk)
 
     if request.method == 'POST':
-        form = ImageForm(request.POST)
+        form = ImageForm(request.POST, instance=image)
 
         if form.is_valid():
-            return HttpResponseRedirect('/admin/')
+            form.save()
 
     else:
         form = ImageForm()
