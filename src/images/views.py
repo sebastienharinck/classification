@@ -1,14 +1,17 @@
-from django.views import generic
-from django.shortcuts import render, reverse
+from django.views.generic import DetailView, TemplateView
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, reverse
 
-from .models import Image, get_random_image_without_tags
 from .forms import ImageForm
+from .models import Image, get_random_image_without_tags
 
 
-class DetailView(generic.DetailView):
+class DetailView(DetailView):
     model = Image
     template_name = 'images/image.html'
+
+class CongratulationsView(TemplateView):
+    template_name = 'images/congratulations.html'
 
 
 def add_tags(request, pk):
@@ -23,6 +26,7 @@ def add_tags(request, pk):
             next_img = get_random_image_without_tags()
             if next_img:
                 return HttpResponseRedirect(reverse('images:add_tags', args=(next_img.id, )))
+            return HttpResponseRedirect(reverse('images:congratulations'))
 
     else:
         form = ImageForm()

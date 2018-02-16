@@ -24,7 +24,7 @@ class ImageModelTests(TestCase):
 
     def test_add_tags(self):
         """
-        A user can add tags to an image
+        A user can add tags to an image.
         """
         image_a = Image.objects.get(file='img_a.jpeg')
         kitchen = Tag.objects.get(name='kitchen')
@@ -41,7 +41,7 @@ class ImageModelTests(TestCase):
     def test_random_redirection(self):
         """
         When a user add tags to an image, he must to be redirected
-        on the new image to classify
+        on the new image to classify.
         """
         image_a = Image.objects.get(file='img_a.jpeg')
         image_b = Image.objects.get(file='img_b.jpeg')
@@ -55,3 +55,25 @@ class ImageModelTests(TestCase):
         )
 
         self.assertRedirects(response, reverse('images:add_tags', args=(image_b.id, )))
+
+    def test_all_images_are_tagged(self):
+        """
+        When all images are tagged, the user is redirect to the congratulations page.
+        """
+        image_a = Image.objects.get(file='img_a.jpeg')
+        image_b = Image.objects.get(file='img_b.jpeg')
+
+        bathroom = Tag.objects.get(name='bathroom')
+
+        self.client.post(
+            reverse('images:add_tags', args=(image_a.id,)),
+            {'tags': bathroom.id}
+        )
+
+        response = self.client.post(
+            reverse('images:add_tags', args=(image_b.id,)),
+            {'tags': bathroom.id},
+            follow=True
+        )
+
+        self.assertRedirects(response, reverse('images:congratulations'))
