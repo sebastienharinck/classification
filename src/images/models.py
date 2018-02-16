@@ -12,7 +12,7 @@ class Tag(models.Model):
 
 class Image(models.Model):
     file = models.ImageField()
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
 
 def get_random_image_without_tags():
