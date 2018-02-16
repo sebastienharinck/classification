@@ -6,12 +6,26 @@ from .forms import ImageForm
 from .models import Image, get_random_image_without_tags
 
 
+class HomeView(TemplateView):
+    template_name = 'images/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        next_img = get_random_image_without_tags()
+        if next_img:
+            context['next_img'] = next_img.id
+        return context
+
+
 class DetailView(DetailView):
     model = Image
     template_name = 'images/image.html'
 
+
 class CongratulationsView(TemplateView):
     template_name = 'images/congratulations.html'
+
+
 
 
 def add_tags(request, pk):

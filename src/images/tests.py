@@ -12,6 +12,47 @@ class ImageModelTests(TestCase):
         Tag.objects.create(name='bathroom')
         Tag.objects.create(name='bedroom')
 
+    def test_homepage(self):
+        """
+        A user can display the homepage.
+        """
+        response = self.client.get(reverse('images:home'))
+        self.assertContains(response, 'Welcome')
+
+    def test_homepage_start_classification(self):
+        """
+        If there still have no tagged images, a user can start a classification.
+        """
+        image_a = Image.objects.get(file='img_a.jpeg')
+        image_b = Image.objects.get(file='img_b.jpeg')
+
+        response = self.client.get(reverse('images:home'))
+        self.assertIn('next_img', response.context)
+        self.assertIn(response.context['next_img'], [image_a.id, image_b.id])
+
+    def test_homepage_all_images_are_tagged(self):
+        """
+        If all images are tagged, a user must see a message and can't start a classification
+        """
+        image_a = Image.objects.get(file='img_a.jpeg')
+        image_b = Image.objects.get(file='img_b.jpeg')
+
+        bedroom = Tag.objects.get(name='bedroom')
+
+        self.client.post(
+            reverse('images:add_tags', args=(image_a.id,)),
+            {'tags': bedroom.id}
+        )
+
+        self.client.post(
+            reverse('images:add_tags', args=(image_b.id,)),
+            {'tags': bedroom.id},
+            follow=True
+        )
+
+        response = self.client.get(reverse('images:home'))
+        self.assertNotIn('next_img', response.context)
+        self.assertContains(response, "It seems that all images are tagged")
 
     def test_display_img(self):
         """

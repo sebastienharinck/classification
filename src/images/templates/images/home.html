@@ -1,0 +1,7 @@
+<h1>Welcome to the image classification</h1>
+
+{% if next_img %}
+    <a href="{% url 'images:add_tags' next_img %}">Start the classification</a>
+{% else %}
+    <p>It seems that all images are tagged.</p>
+{% endif %}
