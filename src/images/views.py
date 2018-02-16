@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
@@ -46,6 +47,7 @@ def add_tags(request, pk):
     return render(request, 'images/add-tags.html', {'form': form, 'image': image})
 
 
+@login_required
 def vote(request, pk):
     image = Image.objects.get(pk=pk)
 
