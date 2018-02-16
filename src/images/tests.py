@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import reverse
 
-from .models import Image, Tag
+from .models import Image, Tag, get_random_image_without_tags
 
 
 class ImageModelTests(TestCase):
@@ -30,3 +30,23 @@ class ImageModelTests(TestCase):
 
         expected_result = list(map(repr, [bedroom, kitchen]))
         self.assertQuerysetEqual(image.tags.order_by('name'), expected_result)
+
+    def test_random_redirection(self):
+        """
+        When a user add tags to an image, he must to be redirected
+        on the new image to classify
+        """
+        image_a = Image.objects.create(file='img_a.jpeg')
+        image_b = Image.objects.create(file='img_b.jpeg')
+
+        Tag.objects.create(name='kitchen')
+        bathroom = Tag.objects.create(name='bathroom')
+        Tag.objects.create(name='bedroom')
+
+        response = self.client.post(
+            reverse('images:add_tags', args=(image_a.id,)),
+            {'tags': bathroom.id},
+            follow=True
+        )
+
+        self.assertRedirects(response, reverse('images:detail', args=(image_b.id, )))

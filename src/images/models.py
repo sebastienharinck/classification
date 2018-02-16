@@ -1,3 +1,5 @@
+import random
+
 from django.db import models
 
 
@@ -11,3 +13,11 @@ class Tag(models.Model):
 class Image(models.Model):
     file = models.ImageField()
     tags = models.ManyToManyField(Tag)
+
+
+def get_random_image_without_tags():
+    ids = Image.objects.filter(tags=None).values_list('id', flat=True)
+    if not ids:
+        return False
+    rand = random.choice(ids)
+    return Image.objects.get(pk=rand)

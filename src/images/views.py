@@ -1,7 +1,8 @@
 from django.views import generic
-from django.shortcuts import render
+from django.shortcuts import render, reverse
+from django.http import HttpResponseRedirect
 
-from .models import Image
+from .models import Image, get_random_image_without_tags
 from .forms import ImageForm
 
 
@@ -18,6 +19,10 @@ def add_tags(request, pk):
 
         if form.is_valid():
             form.save()
+
+            next_img = get_random_image_without_tags()
+            if next_img:
+                return HttpResponseRedirect(reverse('images:detail', args=(next_img.id, )))
 
     else:
         form = ImageForm()
