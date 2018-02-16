@@ -22,7 +22,7 @@ def add_tags(request, pk):
 
             next_img = get_random_image_without_tags()
             if next_img:
-                return HttpResponseRedirect(reverse('images:detail', args=(next_img.id, )))
+                return HttpResponseRedirect(reverse('images:add_tags', args=(next_img.id, )))
 
     else:
         form = ImageForm()

@@ -12,6 +12,7 @@ class ImageModelTests(TestCase):
         Tag.objects.create(name='bathroom')
         Tag.objects.create(name='bedroom')
 
+
     def test_display_img(self):
         """
         A user can display an Image Model.
@@ -53,4 +54,4 @@ class ImageModelTests(TestCase):
             follow=True
         )
 
-        self.assertRedirects(response, reverse('images:detail', args=(image_b.id, )))
+        self.assertRedirects(response, reverse('images:add_tags', args=(image_b.id, )))
