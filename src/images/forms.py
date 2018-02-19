@@ -1,12 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Image, Vote
-
-
-class ImageForm(ModelForm):
-    class Meta:
-        model = Image
-        fields = ['tags']
+from .models import Vote
 
 
 class VoteForm(ModelForm):

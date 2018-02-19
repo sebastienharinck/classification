@@ -3,8 +3,8 @@ from django.views.generic import DetailView, TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 
-from .forms import ImageForm, VoteForm
-from .models import Image, get_random_image_without_tags, get_random_image_with_no_vote
+from .forms import VoteForm
+from .models import Image, get_random_image_with_no_vote
 
 
 class HomeView(TemplateView):
@@ -27,26 +27,6 @@ class CongratulationsView(TemplateView):
     template_name = 'images/congratulations.html'
 
 
-def add_tags(request, pk):
-    image = Image.objects.get(pk=pk)
-
-    if request.method == 'POST':
-        form = ImageForm(request.POST, instance=image)
-
-        if form.is_valid():
-            form.save()
-
-            next_img = get_random_image_without_tags()
-            if next_img:
-                return HttpResponseRedirect(reverse('images:add_tags', args=(next_img.id, )))
-            return HttpResponseRedirect(reverse('images:congratulations'))
-
-    else:
-        form = ImageForm()
-
-    return render(request, 'images/add-tags.html', {'form': form, 'image': image})
-
-
 @login_required
 def vote(request, pk):
     image = Image.objects.get(pk=pk)
@@ -67,6 +47,6 @@ def vote(request, pk):
             return HttpResponseRedirect(reverse('images:congratulations'))
 
     else:
-        form = ImageForm()
+        form = VoteForm()
 
     return render(request, 'images/vote.html', {'form': form, 'image': image})

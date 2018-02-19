@@ -23,14 +23,6 @@ class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-def get_random_image_without_tags():
-    ids = Image.objects.filter(tags=None).values_list('id', flat=True)
-    if not ids:
-        return False
-    rand = random.choice(ids)
-    return Image.objects.get(pk=rand)
-
-
 def get_all_images_ids_with_no_vote():
     q = Image.objects.filter(vote=None)
     q = q.values_list('id', flat=True)
