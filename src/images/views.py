@@ -12,7 +12,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        next_img = get_random_image_without_tags()
+        next_img = get_random_image_with_no_vote()
         if next_img:
             context['next_img'] = next_img.id
         return context
