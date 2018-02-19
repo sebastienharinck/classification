@@ -1,7 +1,13 @@
-<h1>Welcome to the image classification</h1>
+{% extends 'base.html' %}
 
-{% if next_img %}
-    <a href="{% url 'images:vote' next_img %}">Start the classification</a>
-{% else %}
-    <p>It seems that all images are tagged.</p>
-{% endif %}
+{% block content %}
+
+    <h1>Welcome to the image classification</h1>
+
+    {% if next_img %}
+        <a href="{% url 'images:vote' next_img %}">Start the classification</a>
+    {% else %}
+        <p>It seems that all images are tagged.</p>
+    {% endif %}
+
+{% endblock %}
