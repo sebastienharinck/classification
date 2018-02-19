@@ -13,17 +13,6 @@ class ImageTests(TestCase):
         Tag.objects.create(name='bathroom')
         Tag.objects.create(name='bedroom')
 
-    def test_homepage_start_classification(self):
-        """
-        If there still have no tagged images, a user can start a classification.
-        """
-        image_a = Image.objects.get(file='img_a.jpeg')
-        image_b = Image.objects.get(file='img_b.jpeg')
-
-        response = self.client.get(reverse('images:home'))
-        self.assertIn('next_img', response.context)
-        self.assertIn(response.context['next_img'], [image_a.id, image_b.id])
-
     def test_display_img(self):
         """
         A user can display an Image Model.
@@ -33,69 +22,13 @@ class ImageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'img_a.jpeg')
 
-    def test_add_tags(self):
-        """
-        A user can add tags to an image.
-        """
-        image_a = Image.objects.get(file='img_a.jpeg')
-        kitchen = Tag.objects.get(name='kitchen')
-        bedroom = Tag.objects.get(name='bedroom')
-
-        self.client.post(
-            reverse('images:add_tags', args=(image_a.id,)),
-            {'tags': (kitchen.id, bedroom.id)}
-        )
-
-        expected_result = list(map(repr, [bedroom, kitchen]))
-        self.assertQuerysetEqual(image_a.tags.order_by('name'), expected_result)
-
-    def test_random_redirection(self):
-        """
-        When a user add tags to an image, he must to be redirected
-        on the new image to classify.
-        """
-        image_a = Image.objects.get(file='img_a.jpeg')
-        image_b = Image.objects.get(file='img_b.jpeg')
-
-        bathroom = Tag.objects.get(name='bathroom')
-
-        response = self.client.post(
-            reverse('images:add_tags', args=(image_a.id,)),
-            {'tags': bathroom.id},
-            follow=True
-        )
-
-        self.assertRedirects(response, reverse('images:add_tags', args=(image_b.id, )))
-
-    def test_all_images_are_tagged(self):
-        """
-        When all images are tagged, the user is redirect to the congratulations page.
-        """
-        image_a = Image.objects.get(file='img_a.jpeg')
-        image_b = Image.objects.get(file='img_b.jpeg')
-
-        bathroom = Tag.objects.get(name='bathroom')
-
-        self.client.post(
-            reverse('images:add_tags', args=(image_a.id,)),
-            {'tags': bathroom.id}
-        )
-
-        response = self.client.post(
-            reverse('images:add_tags', args=(image_b.id,)),
-            {'tags': bathroom.id},
-            follow=True
-        )
-
-        self.assertRedirects(response, reverse('images:congratulations'))
-
 
 class HomeTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
-        image = Image.objects.create(file='img_a.jpeg')
+        image_a = Image.objects.create(file='img_a.jpeg')
         kitchen = Tag.objects.create(name='kitchen')
-        vote = Vote.objects.create(user=user, image=image)
+        vote = Vote.objects.create(user=user, image=image_a)
         vote.tags.add(kitchen)
 
     def test_homepage(self):
@@ -111,6 +44,16 @@ class HomeTests(TestCase):
         """
         response = self.client.get(reverse('images:home'))
         self.assertContains(response, 'It seems that all images are tagged.')
+
+    def test_homepage_start_classification(self):
+        """
+        If there still have no tagged images, a user can start a classification.
+        """
+        image_b = Image.objects.create(file='img_b.jpeg')
+
+        response = self.client.get(reverse('images:home'))
+        self.assertIn('next_img', response.context)
+        self.assertEqual(response.context['next_img'], image_b.id)
 
 
 class VoteTests(TestCase):
