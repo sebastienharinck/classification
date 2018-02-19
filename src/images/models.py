@@ -29,3 +29,18 @@ def get_random_image_without_tags():
         return False
     rand = random.choice(ids)
     return Image.objects.get(pk=rand)
+
+
+def get_all_images_ids_with_no_vote():
+    q = Image.objects.filter(vote=None)
+    q = q.values_list('id', flat=True)
+
+    return q
+
+
+def get_random_image_with_no_vote():
+    ids = get_all_images_ids_with_no_vote()
+    if not ids:
+        return False
+    rand = random.choice(ids)
+    return Image.objects.get(pk=rand)

@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 
 from .forms import ImageForm, VoteForm
-from .models import Image, get_random_image_without_tags
+from .models import Image, get_random_image_without_tags, get_random_image_with_no_vote
 
 
 class HomeView(TemplateView):
@@ -61,7 +61,7 @@ def vote(request, pk):
             vote.save()
             form.save_m2m()
 
-            next_img = get_random_image_without_tags()
+            next_img = get_random_image_with_no_vote()
             if next_img:
                 return HttpResponseRedirect(reverse('images:vote', args=(next_img.id,)))
             return HttpResponseRedirect(reverse('images:congratulations'))
