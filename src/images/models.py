@@ -13,7 +13,6 @@ class Tag(models.Model):
 
 class Image(models.Model):
     file = models.ImageField()
-    tags = models.ManyToManyField(Tag, blank=True)
 
 
 class Vote(models.Model):
