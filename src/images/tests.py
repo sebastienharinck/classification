@@ -80,7 +80,10 @@ class BucketsTests(TestCase):
         """
         If the identified user have no bucket, a message is displaying to encourage him to create one.
         """
-        pass
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.get(reverse('images:buckets'))
+        self.assertContains(response, 'No Bucket yet.')
 
     def test_buckets_create(self):
         """

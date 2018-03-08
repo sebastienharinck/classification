@@ -4,6 +4,15 @@
 
     <div class="row">
         <h2>My buckets</h2>
+
+        <ul>
+        {% for bucket in object_list %}
+            <li>{{ bucket.name }}</li>
+        {% empty %}
+            <li>No bucket yet.</li>
+        {% endfor %}
+        </ul>
+
     </div>
 
     <div class="row">
