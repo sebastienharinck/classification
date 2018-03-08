@@ -104,6 +104,7 @@ class CreateBucketTests(TestCase):
         self.assertEqual(response.status_code, 302)
         bucket = Bucket.objects.get(pk=1)
         self.assertEqual(bucket.name, 'bucket test')
+        self.assertEqual(bucket.user.id, 1)
 
     def test_bucket_anonymous_create(self):
         """
