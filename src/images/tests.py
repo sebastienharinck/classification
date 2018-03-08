@@ -58,7 +58,8 @@ class HomeTests(TestCase):
 
 class ListBucketsTests(TestCase):
     def setUp(self):
-        User.objects.create_user(username='user', email='user@example.com', password='userexample')
+        user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
+        Bucket.objects.create(user=user, name='bucket start')
 
     def test_buckets_anonymous(self):
         """
@@ -80,10 +81,30 @@ class ListBucketsTests(TestCase):
         """
         If the identified user have no bucket, a message is displaying to encourage him to create one.
         """
-        self.client.login(username='user', password='userexample')
+        User.objects.create_user(username='empty', email='user@example.com', password='userexample')
+        self.client.login(username='empty', password='userexample')
 
         response = self.client.get(reverse('images:buckets'))
         self.assertContains(response, 'No bucket yet.')
+
+    def test_buckets_access_authorized(self):
+        """
+        An identified user can only access to his buckets.
+        """
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.get(reverse('images:buckets'))
+        self.assertContains(response, 'bucket start')
+
+    def test_bucket_access_denied(self):
+        """
+        An identified user can't display the buckets of another user.
+        """
+        User.objects.create_user(username='eviluser', email='user@example.com', password='userexample')
+        self.client.login(username='eviluser', password='userexample')
+
+        response = self.client.get(reverse('images:buckets'))
+        self.assertNotContains(response, 'bucket start')
 
 
 class CreateBucketTests(TestCase):
@@ -117,12 +138,6 @@ class CreateBucketTests(TestCase):
         )
 
         self.assertRedirects(response, '/accounts/login/?next=/images/buckets/create/')
-
-    def test_buckets_access(self):
-        """
-        An identified user can only access to his buckets.
-        """
-        pass
 
     def test_buckets_shared(self):
         """

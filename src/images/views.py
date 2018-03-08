@@ -22,6 +22,9 @@ class HomeView(TemplateView):
 class BucketsListView(LoginRequiredMixin, ListView):
     model = Bucket
 
+    def get_queryset(self):
+        return Bucket.objects.filter(user=self.request.user)
+
 
 class BucketDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
