@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Vote, Bucket
+from .models import Vote
 
 
 class VoteForm(ModelForm):
@@ -9,10 +9,3 @@ class VoteForm(ModelForm):
         fields = ['tags']
 
 
-class BucketForm(ModelForm):
-    class Meta:
-        model = Bucket
-        fields = ['name']
-
-    def __init__(self, user=None, *args, **kwargs):
-        super(BucketForm, self).__init__(*args, **kwargs)

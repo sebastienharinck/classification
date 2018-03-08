@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Image, Bucket, Tag, Vote
+from .models import Image, Tag, Vote
 
 
 class CreateAtAdmin(admin.ModelAdmin):
@@ -8,6 +8,5 @@ class CreateAtAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Image)
-admin.site.register(Bucket)
 admin.site.register(Tag)
 admin.site.register(Vote, CreateAtAdmin)

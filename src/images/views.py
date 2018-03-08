@@ -4,8 +4,8 @@ from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 
-from .forms import VoteForm, BucketForm
-from .models import Image, Bucket, get_random_image_with_no_vote
+from .forms import VoteForm
+from .models import Image, get_random_image_with_no_vote
 
 
 class HomeView(TemplateView):
@@ -17,33 +17,6 @@ class HomeView(TemplateView):
         if next_img:
             context['next_img'] = next_img.id
         return context
-
-
-class BucketsListView(LoginRequiredMixin, ListView):
-    model = Bucket
-
-    def get_queryset(self):
-        return Bucket.objects.filter(user=self.request.user)
-
-
-class BucketDetailView(LoginRequiredMixin, DetailView):
-    def get_queryset(self):
-        return Bucket.objects.all()
-
-
-class BucketCreateView(LoginRequiredMixin, CreateView):
-    model = Bucket
-    form_class = BucketForm
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.user = self.request.user
-        return super(BucketCreateView, self).form_valid(form)
-
-    def get_form_kwargs(self):
-        kwargs = super(BucketCreateView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
 
 
 class ImageDetailView(DetailView):
