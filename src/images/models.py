@@ -2,6 +2,7 @@ import random
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import reverse
 
 
 class Tag(models.Model):
@@ -17,6 +18,9 @@ class Image(models.Model):
 
 class Bucket(models.Model):
     name = models.CharField(max_length=120)
+
+    def get_absolute_url(self):
+        return reverse('images:bucket_detail', kwargs={'pk': self.pk})
 
 
 class Vote(models.Model):

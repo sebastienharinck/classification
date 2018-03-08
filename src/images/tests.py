@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
 
-from .models import Image, Tag, Vote, get_all_images_ids_with_no_vote, get_random_image_with_no_vote
+from .models import *
 
 
 class ImageTests(TestCase):
@@ -56,7 +56,7 @@ class HomeTests(TestCase):
         self.assertEqual(response.context['next_img'], image_b.id)
 
 
-class BucketsTests(TestCase):
+class ListBucketsTests(TestCase):
     def setUp(self):
         User.objects.create_user(username='user', email='user@example.com', password='userexample')
 
@@ -83,13 +83,39 @@ class BucketsTests(TestCase):
         self.client.login(username='user', password='userexample')
 
         response = self.client.get(reverse('images:buckets'))
-        self.assertContains(response, 'No Bucket yet.')
+        self.assertContains(response, 'No bucket yet.')
 
-    def test_buckets_create(self):
+
+class CreateBucketTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='user@example.com', password='userexample')
+
+    def test_bucket_user_create(self):
         """
-        An identified user can access to the bucket creation page.
+        An identified user can create a bucket.
         """
-        pass
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.post(
+            reverse('images:bucket_create'),
+            {'name': 'bucket test'},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        bucket = Bucket.objects.get(pk=1)
+        self.assertEqual(bucket.name, 'bucket test')
+
+    def test_bucket_anonymous_create(self):
+        """
+        An anonymous user can't create a bucket.
+        """
+        response = self.client.post(
+            reverse('images:bucket_create'),
+            {'name': 'bucket test'},
+            follow=True
+        )
+
+        self.assertRedirects(response, '/accounts/login/?next=/images/buckets/create/')
 
     def test_buckets_access(self):
         """

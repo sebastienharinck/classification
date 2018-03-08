@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, TemplateView, ListView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 
@@ -21,6 +21,16 @@ class HomeView(TemplateView):
 
 class BucketsListView(LoginRequiredMixin, ListView):
     model = Bucket
+
+
+class BucketDetailView(LoginRequiredMixin, DetailView):
+    def get_queryset(self):
+        return Bucket.objects.all()
+
+
+class BucketCreateView(LoginRequiredMixin, CreateView):
+    model = Bucket
+    fields = ['name']
 
 
 class ImageDetailView(DetailView):
