@@ -15,6 +15,10 @@ class Image(models.Model):
     file = models.ImageField()
 
 
+class Bucket(models.Model):
+    name = models.CharField(max_length=120)
+
+
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)

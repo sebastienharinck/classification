@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView, TemplateView, ListView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 
 from .forms import VoteForm
-from .models import Image, get_random_image_with_no_vote
+from .models import Image, Bucket, get_random_image_with_no_vote
 
 
 class HomeView(TemplateView):
@@ -18,7 +19,11 @@ class HomeView(TemplateView):
         return context
 
 
-class DetailView(DetailView):
+class BucketsListView(LoginRequiredMixin, ListView):
+    model = Bucket
+
+
+class ImageDetailView(DetailView):
     model = Image
     template_name = 'images/image.html'
 

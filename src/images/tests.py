@@ -56,6 +56,51 @@ class HomeTests(TestCase):
         self.assertEqual(response.context['next_img'], image_b.id)
 
 
+class BucketsTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='user@example.com', password='userexample')
+
+    def test_buckets_anonymous(self):
+        """
+        An anonymous user can't display the buckets page.
+        """
+        response = self.client.get(reverse('images:buckets'))
+        self.assertRedirects(response, '/accounts/login/?next=/images/buckets/')
+
+    def test_buckets_connected(self):
+        """
+        An identified user can display the buckets page.
+        """
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.get(reverse('images:buckets'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_buckets_empty(self):
+        """
+        If the identified user have no bucket, a message is displaying to encourage him to create one.
+        """
+        pass
+
+    def test_buckets_create(self):
+        """
+        An identified user can access to the bucket creation page.
+        """
+        pass
+
+    def test_buckets_access(self):
+        """
+        An identified user can only access to his buckets.
+        """
+        pass
+
+    def test_buckets_shared(self):
+        """
+        An identified user can access to the buckets shared with him.
+        """
+        pass
+
+
 class VoteTests(TestCase):
     def setUp(self):
         User.objects.create_user(username='user', email='user@example.com', password='userexample')
