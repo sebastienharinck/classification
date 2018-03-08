@@ -6,6 +6,13 @@
 
         <div class="col s6">
            <img width="100%" height="auto" src="{{ image.file.url }}" alt="">
+            <form action="">
+                <button class="btn waves-effect waves-light">Je ne sais pas</button>
+            </form>
+
+            <form action="">
+                <button class="btn waves-effect waves-light red darken-1">Delete</button>
+            </form>
         </div>
 
         <form action="{% url 'images:vote' image.id %}" method="POST" class="col s6">
@@ -14,7 +21,7 @@
                 {{ form.tags }}
             </div>
 
-            <button class="btn waves-effect waves-light" type="submit">Vote <i class="material-icons right">send</i></button>
+            <button class="btn waves-effect waves-light right" type="submit">Vote <i class="material-icons right">send</i></button>
         </form>
 
     </div>
