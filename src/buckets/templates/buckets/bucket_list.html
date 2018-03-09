@@ -7,7 +7,7 @@
 
         <ul>
         {% for bucket in object_list %}
-            <li>{{ bucket.name }}</li>
+            <a href="{{ bucket.get_absolute_url }}"><li>{{ bucket.name }}</li></a>
         {% empty %}
             <li>No bucket yet.</li>
         {% endfor %}
