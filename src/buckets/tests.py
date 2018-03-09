@@ -119,7 +119,7 @@ class LabelsBucketTests(TestCase):
 
     def test_add_labels_to_bucket_denied(self):
         """
-        A, anonymous user can't add labels to another bucket.
+        A anonymous user can't add labels to another bucket.
         """
         bucket = Bucket.objects.get(name='bucket test')
 
@@ -130,3 +130,19 @@ class LabelsBucketTests(TestCase):
         )
 
         self.assertRedirects(response, '/accounts/login/?next=/buckets/1/add-labels/')
+
+    def test_add_labels_to_another_bucket_denied(self):
+        """
+        A user can't add labels to another bucket.
+        """
+        User.objects.create_user(username='eviluser', email='user@example.com', password='userexample')
+        self.client.login(username='eviluser', password='userexample')
+        bucket = Bucket.objects.get(name='bucket test')
+
+        response = self.client.post(
+            reverse('buckets:add_labels', args=(bucket.id,)),
+            {'name': 'test'}
+        )
+
+        self.assertEqual(response.status_code, 403)
+

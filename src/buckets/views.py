@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, FormView
 
 from .models import Bucket, Label
@@ -41,10 +42,14 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        obj.bucket = Bucket.objects.get(pk=self.kwargs.get('pk'))
+        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
+        if not bucket.exists():
+            return HttpResponseForbidden()
+        obj.bucket = bucket.first()
         return super(BucketAddLabelsView, self).form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super(BucketAddLabelsView, self).get_form_kwargs()
-        kwargs['bucket'] = Bucket.objects.get(pk=self.kwargs.get('pk'))
+        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
+        kwargs['bucket'] = bucket.first()
         return kwargs
