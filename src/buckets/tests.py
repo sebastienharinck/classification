@@ -85,6 +85,20 @@ class CreateBucketTests(TestCase):
         self.assertEqual(bucket.name, 'bucket test')
         self.assertEqual(bucket.user.id, 1)
 
+    def test_bucket_user_create_redirect(self):
+        """
+        An identified user is redirect to the bucket list if he created a bucket.
+        """
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.post(
+            reverse('buckets:create'),
+            {'name': 'bucket test'},
+            follow=True
+        )
+
+        self.assertRedirects(response, reverse('buckets:list'))
+
     def test_bucket_anonymous_create(self):
         """
         An anonymous user can't create a bucket.

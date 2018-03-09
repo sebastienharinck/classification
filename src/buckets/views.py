@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, FormView
+from django.shortcuts import reverse
 
 from .models import Bucket, Label
 from .forms import BucketForm, BucketAddLabelsForm
@@ -32,6 +33,9 @@ class BucketCreateView(LoginRequiredMixin, CreateView):
         kwargs = super(BucketCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_success_url(self):
+        return reverse('buckets:list')
 
 
 class BucketAddLabelsView(LoginRequiredMixin, CreateView):
