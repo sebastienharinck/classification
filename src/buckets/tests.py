@@ -188,7 +188,8 @@ class LabelsBucketTests(TestCase):
 class DetailBucketViewTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
-        Bucket.objects.create(name='Kitchen', user=user)
+        bucket = Bucket.objects.create(name='Kitchen', user=user)
+        Label.objects.create(name='table', bucket=bucket)
 
     def test_user_can_access_to_the_add_labels_page_from_bucket_view(self):
         """
@@ -201,5 +202,13 @@ class DetailBucketViewTests(TestCase):
 
         self.assertContains(response, reverse('buckets:add_labels', args=(bucket.id,)))
 
+    def test_user_can_see_the_labels_on_the_bucket_view(self):
+        """
+        A user can see his labels on the bucket view.
+        """
+        self.client.login(username='user', password='userexample')
+        bucket = Bucket.objects.get(name='Kitchen')
 
+        response = self.client.get(reverse('buckets:detail', args=(bucket.id,)))
 
+        self.assertContains(response, 'table')
