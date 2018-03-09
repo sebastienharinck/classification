@@ -169,3 +169,22 @@ class LabelsBucketTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+
+class DetailBucketViewTests(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
+        Bucket.objects.create(name='Kitchen', user=user)
+
+    def test_user_can_access_to_the_add_labels_page_from_bucket_view(self):
+        """
+        A user can access to the "add_labels" page from the bucket detail.
+        """
+        self.client.login(username='user', password='userexample')
+        bucket = Bucket.objects.get(name='Kitchen')
+
+        response = self.client.get(reverse('buckets:detail', args=(bucket.id,)))
+
+        self.assertContains(response, reverse('buckets:add_labels', args=(bucket.id,)))
+
+
+
