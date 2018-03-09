@@ -140,6 +140,21 @@ class LabelsBucketTests(TestCase):
         self.assertEqual(label.name, 'test')
         self.assertEqual(label.bucket.name, 'bucket test')
 
+    def test_add_labels_to_bucket_redirect(self):
+        """
+        A user is redirect to the bucket view after adding labels.
+        """
+        self.client.login(username='user', password='userexample')
+        bucket = Bucket.objects.get(name='bucket test')
+
+        response = self.client.post(
+            reverse('buckets:add_labels', args=(bucket.id,)),
+            {'name': 'test'},
+            follow=True
+        )
+
+        self.assertRedirects(response, reverse('buckets:detail', args=(bucket.id,)))
+
     def test_add_labels_to_bucket_denied(self):
         """
         A anonymous user can't add labels to another bucket.

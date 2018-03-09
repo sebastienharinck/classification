@@ -42,7 +42,6 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
     model = Label
     form_class = BucketAddLabelsForm
     template_name = 'buckets/bucket_form.html'
-    success_url = '/congratulations'
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -57,3 +56,6 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
         bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
         kwargs['bucket'] = bucket.first()
         return kwargs
+
+    def get_success_url(self):
+        return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
