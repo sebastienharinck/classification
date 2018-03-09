@@ -3,12 +3,15 @@
 {% block content %}
 
     <h1>{{ object.name }}</h1>
-    <a href="{% url 'buckets:add_labels' object.id %}">add labels</a>
 
-    <ul>
+    <div class="row">
         {% for label in object.label_set.all %}
-            <li>{{ label.name }}</li>
+        <div class="chip">
+            {{ label.name }}
+            <i class="close material-icons">close</i>
+        </div>
         {% endfor %}
-    </ul>
+        <a href="{% url 'buckets:add_labels' object.id %}">add labels</a>
+    </div>
 
 {% endblock %}

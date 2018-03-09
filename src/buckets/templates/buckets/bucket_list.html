@@ -3,15 +3,21 @@
 {% block content %}
 
     <div class="row">
-        <h2>My buckets</h2>
-        <a href="{% url 'buckets:create' %}">create bucket</a>
 
-        <ul>
-        {% for bucket in object_list %}
-            <a href="{{ bucket.get_absolute_url }}"><li>{{ bucket.name }}</li></a>
-        {% empty %}
-            <li>No bucket yet.</li>
-        {% endfor %}
+        <h2>My buckets</h2>
+        <a href="{% url 'buckets:create' %}" class="waves-effect waves-light btn"><i class="material-icons right">add_circle</i>Add bucket</a>
+
+        <ul class="collection with-header">
+            {% for bucket in object_list %}
+                <li class="collection-item">
+                    <div>
+                        <a href="{{ bucket.get_absolute_url }}">{{ bucket.name }}</a>
+                    </div>
+                </li>
+            {% empty %}
+                <li>No bucket yet.</li>
+            {% endfor %}
+
         </ul>
 
     </div>

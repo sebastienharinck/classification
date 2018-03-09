@@ -4,7 +4,7 @@
 
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Save" />
+        <button class="btn waves-effect waves-light" type="submit"><i class="material-icons right">send</i>save</button>
     </form>
 
 {% endblock %}
