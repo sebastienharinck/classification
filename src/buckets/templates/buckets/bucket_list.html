@@ -7,7 +7,7 @@
         <h2>My buckets</h2>
         <a href="{% url 'buckets:create' %}" class="waves-effect waves-light btn"><i class="material-icons right">add_circle</i>Add bucket</a>
 
-        <ul class="collection with-header">
+        <ul class="collection with-header z-depth-1">
             {% for bucket in object_list %}
                 <li class="collection-item">
                     <div>
