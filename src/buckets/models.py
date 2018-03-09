@@ -12,3 +12,11 @@ class Bucket(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Label(models.Model):
+    name = models.CharField(max_length=120)
+    bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING, null=True)
+
+    def __str__(self):
+        return self.name

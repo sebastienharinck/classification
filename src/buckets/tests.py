@@ -93,3 +93,40 @@ class CreateBucketTests(TestCase):
         An identified user can access to the buckets shared with him.
         """
         pass
+
+
+class LabelsBucketTests(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
+        Bucket.objects.create(name='bucket test', user=user)
+
+    def test_add_labels_to_bucket(self):
+        """
+        A user can create labels in a bucket.
+        """
+        self.client.login(username='user', password='userexample')
+        bucket = Bucket.objects.get(name='bucket test')
+
+        response = self.client.post(
+            reverse('buckets:add_labels', args=(bucket.id,)),
+            {'name': 'test'}
+        )
+
+        self.assertEqual(response.status_code, 302)
+        label = Label.objects.get(pk=1)
+        self.assertEqual(label.name, 'test')
+        self.assertEqual(label.bucket.name, 'bucket test')
+
+    def test_add_labels_to_bucket_denied(self):
+        """
+        A, anonymous user can't add labels to another bucket.
+        """
+        bucket = Bucket.objects.get(name='bucket test')
+
+        response = self.client.post(
+            reverse('buckets:add_labels', args=(bucket.id,)),
+            {'name': 'test'},
+            follow=True
+        )
+
+        self.assertRedirects(response, '/accounts/login/?next=/buckets/1/add-labels/')

@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.BucketsListView.as_view(), name='list'),
     path('create/', views.BucketCreateView.as_view(), name='create'),
     path('<int:pk>/', views.BucketDetailView.as_view(), name='detail'),
+    path('<int:pk>/add-labels/', views.BucketAddLabelsView.as_view(), name='add_labels'),
 ]
