@@ -4,6 +4,7 @@
 
     <div class="row">
         <h2>My buckets</h2>
+        <a href="{% url 'buckets:create' %}">create bucket</a>
 
         <ul>
         {% for bucket in object_list %}

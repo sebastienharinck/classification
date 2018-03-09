@@ -55,6 +55,15 @@ class ListBucketsTests(TestCase):
         response = self.client.get(reverse('buckets:list'))
         self.assertNotContains(response, 'bucket start')
 
+    def test_buckets_create_bucket(self):
+        """
+        A user can access to the page to create a bucket.
+        """
+        self.client.login(username='user', password='userexample')
+
+        response = self.client.get(reverse('buckets:list'))
+        self.assertContains(response, reverse('buckets:create'))
+
 
 class CreateBucketTests(TestCase):
     def setUp(self):
