@@ -2,8 +2,8 @@ import random
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
-from django.shortcuts import reverse
+
+from buckets.models import Bucket
 
 
 class Tag(models.Model):
@@ -15,6 +15,7 @@ class Tag(models.Model):
 
 class Image(models.Model):
     file = models.ImageField()
+    bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING)
 
 
 class Vote(models.Model):

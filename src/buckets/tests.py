@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 from django.contrib.auth.models import User
 
 from .models import *
+from images.models import Image
 
 
 class ListBucketsTests(TestCase):
@@ -183,6 +184,33 @@ class LabelsBucketTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+
+class ImagesBucketViewTests(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
+        Bucket.objects.create(name='Kitchen', user=user)
+
+    def test_user_can_add_images_to_bucket(self):
+        """
+        A user can add images to a bucket.
+        """
+        self.client.login(username='user', password='userexample')
+        bucket = Bucket.objects.get(name='Kitchen')
+
+        f = open("src/buckets/tests/images/kitchen-3215407_640.jpg", "rb")
+
+        response = self.client.post(
+            reverse('buckets:add_images', args=(bucket.id,)),
+            {'file': f},
+        )
+
+        f.close()
+
+        self.assertEqual(response.status_code, 302)
+        image = Image.objects.get(pk=1)
+        self.assertIn('kitchen-3215407_640', image.file.url)
+        self.assertEqual(image.bucket.id, 1)
 
 
 class DetailBucketViewTests(TestCase):

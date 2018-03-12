@@ -14,4 +14,10 @@
         <a href="{% url 'buckets:add_labels' object.id %}">add labels</a>
     </div>
 
+    <div class="row">
+        {% for image in object.image_set.all %}
+            <img src="{{ image.file.url }}" alt="">
+        {% endfor %}
+    </div>
+
 {% endblock %}

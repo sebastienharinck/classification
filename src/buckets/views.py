@@ -5,7 +5,9 @@ from django.views.generic import DetailView, TemplateView, ListView, CreateView,
 from django.shortcuts import reverse
 
 from .models import Bucket, Label
-from .forms import BucketForm, BucketAddLabelsForm
+from .forms import *
+
+from images.models import Image
 
 
 class BucketsListView(LoginRequiredMixin, ListView):
@@ -53,6 +55,29 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(BucketAddLabelsView, self).get_form_kwargs()
+        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
+        kwargs['bucket'] = bucket.first()
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
+
+
+class BucketAddImagesView(LoginRequiredMixin, CreateView):
+    model = Image
+    form_class = BucketAddImagesForm
+    template_name = 'buckets/bucket_form.html'
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
+        if not bucket.exists():
+            return HttpResponseForbidden()
+        obj.bucket = bucket.first()
+        return super(BucketAddImagesView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(BucketAddImagesView, self).get_form_kwargs()
         bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
         kwargs['bucket'] = bucket.first()
         return kwargs
