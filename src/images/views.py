@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView, TemplateView, ListView, CreateView
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, reverse
+from django.views.generic import DetailView, TemplateView, CreateView
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import render
 
 from .forms import VoteForm
-from .models import Image, get_random_image_with_no_vote
+from .models import *
+
+from buckets.models import *
 
 
 class HomeView(TemplateView):
@@ -24,30 +26,40 @@ class ImageDetailView(DetailView):
     template_name = 'images/image.html'
 
 
-class CongratulationsView(TemplateView):
-    template_name = 'images/congratulations.html'
+class VoteCreateView(LoginRequiredMixin, CreateView):
+    model = Vote
+    form_class = VoteForm
+    template_name = 'images/vote_form.html'
 
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        image = Image.objects.filter(pk=self.kwargs.get('pk'))
+        bucket = Bucket.objects.filter(image=self.kwargs.get('pk')).first()
+        if not image.exists():
+            return HttpResponseForbidden()
+        obj.image = image.first()
+        obj.user = self.request.user
+        obj.bucket = bucket
+        return super(VoteCreateView, self).form_valid(form)
 
-@login_required
-def vote(request, pk):
-    image = Image.objects.get(pk=pk)
+    def get_form_kwargs(self):
+        kwargs = super(VoteCreateView, self).get_form_kwargs()
+        image = Image.objects.get(pk=self.kwargs.get('pk'))
+        bucket = Bucket.objects.filter(image=self.kwargs.get('pk')).first()
+        kwargs['image'] = image
+        kwargs['user'] = self.request.user
+        kwargs['bucket'] = bucket
+        return kwargs
 
-    if request.method == 'POST':
-        form = VoteForm(request.POST)
+    def get_success_url(self):
+        image = Image.objects.get(pk=self.kwargs.get('pk'))
+        next_image = get_random_image_with_no_vote(image.bucket)
+        if next_image:
+            return reverse('images:vote', args=(next_image.id,))
+        return reverse('buckets:detail', args=(image.bucket.id,))
 
-        if form.is_valid():
-            vote = form.save(commit=False)
-            vote.image = image
-            vote.user = request.user
-            vote.save()
-            form.save_m2m()
-
-            next_img = get_random_image_with_no_vote()
-            if next_img:
-                return HttpResponseRedirect(reverse('images:vote', args=(next_img.id,)))
-            return HttpResponseRedirect(reverse('images:congratulations'))
-
-    else:
-        form = VoteForm()
-
-    return render(request, 'images/vote.html', {'form': form, 'image': image})
+    def get_context_data(self, *args, **kwargs):
+        context = super(VoteCreateView, self).get_context_data(*args, **kwargs)
+        context['image'] = Image.objects.get(pk=self.kwargs.get('pk'))
+        context['bucket'] = Bucket.objects.filter(image=self.kwargs.get('pk')).first()
+        return context

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        Bucket : <a href="{{ bucket.get_absolute_url }}">{{ bucket.name }}</a>
+    </div>
+
+    <div class="row">
+
+        <div class="col s6">
+                {% if image.file %}
+                    <img width="100%" height="auto" src="{{ image.file.url }}" alt="">
+                {% endif %}
+                <form action="">
+                    <button class="btn waves-effect waves-light">Je ne sais pas</button>
+                </form>
+
+                <form action="">
+                    <button class="btn waves-effect waves-light red darken-1">Delete</button>
+                </form>
+            </div>
+
+        <form action="" method="post" enctype="multipart/form-data" class="col s6">{% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn waves-effect waves-light" type="submit"><i class="material-icons right">send</i>save</button>
+        </form>
+
+    </div>
+
+{% endblock %}

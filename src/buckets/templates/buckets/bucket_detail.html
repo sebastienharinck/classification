@@ -4,7 +4,14 @@
 
     <h1>{{ object.name }}</h1>
 
+    {% if next_img %}
+        <a class="btn" href="{% url 'images:vote' next_img.id %}">Start classification</a>
+    {% else %}
+        Congratulations ! It seems that we have votes on all images.
+    {% endif %}
+
     <div class="row">
+        <h4>labels</h4>
         {% for label in object.label_set.all %}
         <div class="chip">
             {{ label.name }}
@@ -15,9 +22,49 @@
     </div>
 
     <div class="row">
-        {% for image in object.image_set.all %}
-            <img src="{{ image.file.url }}" alt="">
-        {% endfor %}
+        <h4>Images</h4>
+        <a href="{% url 'buckets:add_images' object.id %}">add images</a>
+        <div class="row">
+            {% for image in object.image_set.all %}
+                {% if image.file %}
+                    <a href="{% url 'images:vote' image.id %}"><img width="200" height="200" src="{{ image.file.url }}" alt=""></a>
+                {% endif %}
+            {% empty %}
+                No images provided.
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row">
+        <h4>Votes</h4>
+        <div class="row">
+            <table>
+                <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>user</th>
+                      <th>Image</th>
+                      <th>Labels</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for vote in object.vote_set.all %}
+                        <tr>
+                            <td>{{ vote.created_at }}</td>
+                            <td>{{ vote.user }}</td>
+                            <td><a href="{{ vote.image.get_absolute_url }}">{{ vote.image.get_absolute_url }}</a></td>
+                            <td>
+                                {% for label in vote.labels.all %}
+                                    <div class="chip">
+                                        {{ label }}
+                                    </div>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 {% endblock %}

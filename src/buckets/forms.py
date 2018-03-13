@@ -22,10 +22,5 @@ class BucketAddLabelsForm(forms.ModelForm):
         super(BucketAddLabelsForm, self).__init__(*args, **kwargs)
 
 
-class BucketAddImagesForm(forms.ModelForm):
-    class Meta:
-        model = Image
-        fields = ['file']
-
-    def __init__(self, bucket=None, *args, **kwargs):
-        super(BucketAddImagesForm, self).__init__(*args, **kwargs)
+class UploadForm(forms.Form):
+    files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))

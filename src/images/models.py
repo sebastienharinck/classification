@@ -2,38 +2,36 @@ import random
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import reverse
 
-from buckets.models import Bucket
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=120)
-
-    def __str__(self):
-        return self.name
+from buckets.models import *
 
 
 class Image(models.Model):
     file = models.ImageField()
     bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING)
 
+    def get_absolute_url(self):
+        return reverse('images:detail', kwargs={'pk': self.pk})
+
 
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag)
+    bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING)
+    labels = models.ManyToManyField(Label)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-def get_all_images_ids_with_no_vote():
-    q = Image.objects.filter(vote=None)
+def get_all_images_ids_with_no_vote(bucket):
+    q = Image.objects.filter(vote=None, bucket=bucket)
     q = q.values_list('id', flat=True)
 
     return q
 
 
-def get_random_image_with_no_vote():
-    ids = get_all_images_ids_with_no_vote()
+def get_random_image_with_no_vote(bucket):
+    ids = get_all_images_ids_with_no_vote(bucket)
     if not ids:
         return False
     rand = random.choice(ids)

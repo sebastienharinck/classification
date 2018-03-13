@@ -198,19 +198,24 @@ class ImagesBucketViewTests(TestCase):
         self.client.login(username='user', password='userexample')
         bucket = Bucket.objects.get(name='Kitchen')
 
-        f = open("src/buckets/tests/images/kitchen-3215407_640.jpg", "rb")
+        f1 = open("src/buckets/tests/images/kitchen-3215407_640.jpg", "rb")
+        f2 = open("src/buckets/tests/images/modern-kitchen-3217932_640.jpg", "rb")
 
         response = self.client.post(
             reverse('buckets:add_images', args=(bucket.id,)),
-            {'file': f},
+            {'files': [f1, f2]},
         )
 
-        f.close()
+        f1.close()
+        f2.close()
 
         self.assertEqual(response.status_code, 302)
-        image = Image.objects.get(pk=1)
-        self.assertIn('kitchen-3215407_640', image.file.url)
-        self.assertEqual(image.bucket.id, 1)
+        image1 = Image.objects.get(pk=1)
+        image2 = Image.objects.get(pk=2)
+        self.assertIn('kitchen-3215407_640', image1.file.url)
+        self.assertIn('modern-kitchen-3217932_640', image2.file.url)
+        self.assertEqual(image1.bucket.id, 1)
+        self.assertEqual(image2.bucket.id, 1)
 
 
 class DetailBucketViewTests(TestCase):
