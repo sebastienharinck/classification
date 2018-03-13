@@ -1,11 +1,7 @@
-import os
-
 from django.test import TestCase
-from django.shortcuts import reverse
 from django.contrib.auth.models import User
 
-from buckets.models import *
-from images.models import Image
+from buckets.models import Bucket, Label
 
 
 class BucketModelTest(TestCase):

@@ -9,8 +9,9 @@ class VoteForm(ModelForm):
         model = Vote
         fields = ['labels']
 
-    def __init__(self, image=None, user=None, bucket=None, *args, **kwargs):
+    def __init__(self, user=None, bucket=None, *args, **kwargs):
+        self.image = kwargs.pop('image')
         super(VoteForm, self).__init__(*args, **kwargs)
-        self.fields['labels'].queryset = Label.objects.filter(bucket__image=image.id)
+        self.fields['labels'].queryset = Label.objects.filter(bucket__image=self.image.id)
 
 

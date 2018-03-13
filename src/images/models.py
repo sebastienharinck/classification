@@ -18,7 +18,7 @@ class Image(models.Model):
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
-    bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING)
+    # bucket = models.ForeignKey(Bucket, on_delete=models.DO_NOTHING)
     labels = models.ManyToManyField(Label)
     created_at = models.DateTimeField(auto_now_add=True)
 
