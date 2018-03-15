@@ -10,17 +10,6 @@ from .models import *
 from buckets.models import *
 
 
-class HomeView(TemplateView):
-    template_name = 'images/home.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        next_img = get_random_image_with_no_vote()
-        if next_img:
-            context['next_img'] = next_img.id
-        return context
-
-
 class ImageDetailView(DetailView):
     model = Image
     template_name = 'images/image.html'
