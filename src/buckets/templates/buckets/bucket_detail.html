@@ -7,7 +7,7 @@
     {% if next_img %}
         <a class="btn" href="{% url 'images:vote' next_img.id %}">Start classification</a>
     {% else %}
-        Congratulations ! It seems that we have votes on all images.
+        Congratulations !   It seems that we have votes on all images.
     {% endif %}
 
     <div class="row">
@@ -48,7 +48,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for vote in object.vote_set.all %}
+                    {% for vote in object.get_all_votes %}
                         <tr>
                             <td>{{ vote.created_at }}</td>
                             <td>{{ vote.user }}</td>
