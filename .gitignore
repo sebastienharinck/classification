@@ -9,3 +9,9 @@ src/.idea/
 
 !.gitignore
 !requirements.txt
+
+src/tests/img/*
+!src/tests/img/img1.jpg
+!src/tests/img/img2.jpg
+!src/tests/img/img3.jpg
+!src/tests/img/img4.jpg
