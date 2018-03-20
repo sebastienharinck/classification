@@ -1,6 +1,9 @@
+import os
+
 from django.test import TestCase
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from images.models import *
 from buckets.models import *
@@ -10,8 +13,10 @@ class VoteTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
         bucket = Bucket.objects.create(user=user, name='bucket test')
-        Image.objects.create(file='img_a.jpeg', bucket=bucket)
-        Image.objects.create(file='img_b.jpeg', bucket=bucket)
+        file_img1 = os.path.join(settings.MEDIA_ROOT, 'img1.jpg')
+        file_img2 = os.path.join(settings.MEDIA_ROOT, 'img2.jpg')
+        Image.objects.create(file=file_img1, bucket=bucket)
+        Image.objects.create(file=file_img2, bucket=bucket)
         Label.objects.create(name='kitchen', bucket=bucket)
         Label.objects.create(name='bathroom', bucket=bucket)
         Label.objects.create(name='bedroom', bucket=bucket)
@@ -20,7 +25,7 @@ class VoteTests(TestCase):
         """
         A user can't vote if he is not authenticated.
         """
-        image_a = Image.objects.get(file='img_a.jpeg')
+        image_a = Image.objects.get(pk=1)
         kitchen = Label.objects.get(name='kitchen')
 
         response = self.client.post(
@@ -35,7 +40,7 @@ class VoteTests(TestCase):
         """
         A user can vote on the image with only the tags of the bucket.
         """
-        image_a = Image.objects.get(file='img_a.jpeg')
+        image_a = Image.objects.get(pk=1)
         kitchen = Label.objects.get(name='kitchen')
 
         response = self.client.post(

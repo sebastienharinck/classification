@@ -1,4 +1,5 @@
 import random
+import hashlib
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -8,9 +9,17 @@ from django.shortcuts import reverse
 class Image(models.Model):
     file = models.ImageField()
     bucket = models.ForeignKey('buckets.Bucket', on_delete=models.DO_NOTHING)
+    hash = models.CharField(max_length=128, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('images:detail', kwargs={'pk': self.pk})
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(Image, self).save()
+        if not self.hash:
+            hash = hashlib.sha512(open(self.file.path, 'rb').read())
+            self.hash = hash.hexdigest()
+            super(Image, self).save()
 
 
 class Vote(models.Model):

@@ -10,7 +10,7 @@ class ImageFormTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
         self.bucket = Bucket.objects.create(name='Bucket Name', user=self.user)
-        self.image = Image.objects.create(file='img_a.jpg', bucket=self.bucket)
+        self.image = Image.objects.create(file='img1.jpg', bucket=self.bucket)
         self.label1 = Label.objects.create(name='Kitchen', bucket=self.bucket)
         self.label2 = Label.objects.create(name='Bathroom', bucket=self.bucket)
 

@@ -200,8 +200,8 @@ class ImagesBucketViewTests(TestCase):
         self.client.login(username='user', password='userexample')
         bucket = Bucket.objects.get(name='Kitchen')
 
-        f1 = open(os.path.join(os.path.dirname(__file__), "images/kitchen-3215407_640.jpg"), "rb")
-        f2 = open(os.path.join(os.path.dirname(__file__), "images/modern-kitchen-3217932_640.jpg"), "rb")
+        f1 = open(os.path.join(os.path.dirname(__file__), 'img', 'img10.jpg'), "rb")
+        f2 = open(os.path.join(os.path.dirname(__file__), 'img', 'img11.jpg'), "rb")
 
         response = self.client.post(
             reverse('buckets:add_images', args=(bucket.id,)),
@@ -214,10 +214,11 @@ class ImagesBucketViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         image1 = Image.objects.get(pk=1)
         image2 = Image.objects.get(pk=2)
-        self.assertIn('kitchen-3215407_640', image1.file.url)
-        self.assertIn('modern-kitchen-3217932_640', image2.file.url)
+        self.assertIn('img10', image1.file.url)
+        self.assertIn('img11', image2.file.url)
         self.assertEqual(image1.bucket.id, 1)
         self.assertEqual(image2.bucket.id, 1)
+        self.assertEqual(image1.hash, 'ad798390fcb4f1b4eddd938f6b81035c46a6fb6addd1ae46c86a9f7132770be0a02310ad0c87b40c515b313589a9fced95e9657281e166d511ada782c34bd3b7')
 
 
 class DetailBucketViewTests(TestCase):
