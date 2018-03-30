@@ -6,6 +6,9 @@ src/db.sqlite3
 src/**/__pycache__/
 src/img/
 src/.idea/
+src/*/settings/production.py
+
+gcloud_client_secret.json
 
 !.gitignore
 !requirements.txt
