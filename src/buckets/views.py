@@ -24,6 +24,7 @@ class BucketDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(BucketDetailView, self).get_context_data(*args, **kwargs)
         bucket = Bucket.objects.get(pk=self.kwargs.get('pk'))
+        context['images'] = Image.objects.filter(bucket=bucket.id)[0:20]
         context['next_img'] = get_random_image_with_no_vote(bucket)
         return context
 
@@ -69,6 +70,50 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
         return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
 
 
+from images.models import Image
+
+
+class VoteByLabelsView(LoginRequiredMixin, FormView):
+    template_name = 'buckets/bucket_form_vote_by_labels.html'
+    form_class = VoteFormSet
+    images = None
+
+    def get_form_kwargs(self):
+        kwargs = super(VoteByLabelsView, self).get_form_kwargs()
+        random_img = get_random_sample_image_with_no_vote(self.kwargs.get('label'), 8)
+        if random_img:
+            self.form_class.extra = len(random_img)
+            self.images = Image.objects.filter(pk__in=random_img)
+            kwargs['images'] = self.images
+        else:
+            self.form_class.extra = 0
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['images'] = self.images
+        context['label'] = Label.objects.get(pk=self.kwargs.get('label'))
+        return context
+
+    def form_valid(self, form):
+        form.is_valid()
+        for f in form:
+            obj = f.save(commit=False)
+            obj.user = self.request.user
+            obj.label = Label.objects.get(pk=self.kwargs.get('label'))
+            print(obj)
+            obj.save()
+
+        return super(VoteByLabelsView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('buckets:vote_by_labels', kwargs={'bucket': self.kwargs.get('bucket'), 'label': self.kwargs.get('label')})
+
+
+"""
+todo : https://simpleisbetterthancomplex.com/tutorial/2016/11/22/django-multiple-file-upload-using-ajax.html
+"""
 class UploadView(FormView):
     template_name = 'buckets/bucket_form.html'
     form_class = UploadForm
@@ -83,3 +128,14 @@ class UploadView(FormView):
 
     def get_success_url(self):
         return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
+
+
+# todo : securize
+class ImagesListView(ListView):
+    model = Image
+    template_name = 'buckets/bucket_images.html'  # Default: <app_label>/<model_name>_list.html
+    context_object_name = 'images'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Image.objects.filter(bucket=self.kwargs.get('pk'))
