@@ -3,6 +3,7 @@
 !src/**
 
 src/db.sqlite3
+src/db.prod.sqlite3
 src/**/__pycache__/
 src/img/
 src/.idea/
