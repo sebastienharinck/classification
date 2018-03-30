@@ -1,0 +1,48 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row">
+
+
+    <div class="row left">
+        <a href="{% url 'buckets:detail' label.bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+    </div>
+
+    <h1 class="center">{{ label.name }}</h1>
+
+    {% if images %}
+        <form method="post">{% csrf_token %}
+            {{ form.management_form }}
+            {% for f in form %}
+                    {{ f.errors }}
+
+                    {{ f.image }}
+                    <span>
+                        {{ f.choice }}
+
+                        <label for="{{ f.choice.id_for_label }}">
+                            <img width="200" height="200" src="{{ f.fields.image.initial.file.url }}" alt="">
+                        </label>
+                    </span>
+            {% endfor %}
+            <div class="row">
+                <button class="btn waves-effect waves-light right" type="submit"><i class="material-icons right">send</i>VOTE</button>
+            </div>
+        </form>
+    {% else %}
+    Congratulations ! You vote on all images with the tag <b>{{ label.name }}</b>! You can start a new classification for this tags : XXX
+    {% endif %}
+
+
+
+
+
+
+</div>
+
+
+{% endblock %}
