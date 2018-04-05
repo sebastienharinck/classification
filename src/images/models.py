@@ -39,18 +39,3 @@ class Vote(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-
-
-def get_all_images_ids_with_no_vote(bucket):
-    q = Image.objects.filter(vote=None, bucket=bucket)
-    q = q.values_list('id', flat=True)
-
-    return q
-
-
-def get_random_image_with_no_vote(bucket):
-    ids = get_all_images_ids_with_no_vote(bucket)
-    if not ids:
-        return False
-    rand = random.choice(ids)
-    return Image.objects.get(pk=rand)

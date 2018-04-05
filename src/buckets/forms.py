@@ -63,9 +63,16 @@ class BaseSelectDatesFormSet(BaseFormSet):
 VoteFormSet = modelformset_factory(model=Vote, form=VoteForm, extra=8, formset=BaseSelectDatesFormSet)
 
 
-def get_all_images_ids_with_no_vote(label):
+class BucketInviteUserForm(forms.ModelForm):
+    class Meta:
+        model = Bucket
+        fields = ['shared_users']
+
+
+def get_all_images_ids_with_no_vote(label, user=None):
     label = Label.objects.get(pk=label)
-    q = Image.objects.filter(~Q(vote__label=label), bucket=label.bucket)
+
+    q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
     q = q.values_list('id', flat=True)
 
     return q
@@ -79,8 +86,8 @@ def get_random_image_with_no_vote(bucket):
     return Image.objects.filter(pk=rand)
 
 
-def get_random_sample_image_with_no_vote(label, number):
-    ids = get_all_images_ids_with_no_vote(label)
+def get_random_sample_image_with_no_vote(label, number, user=None):
+    ids = get_all_images_ids_with_no_vote(label, user)
     if not ids:
         return False
     ids_size = len(ids)

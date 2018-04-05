@@ -1,41 +1,93 @@
-import os
-
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.conf import settings
 
 from buckets.models import Bucket, Label
 from images.models import *
 
+from buckets.forms import get_all_images_ids_with_no_vote
+
 
 class ImageModelTest(TestCase):
+
     def setUp(self):
-        self.user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
-        self.bucket = Bucket.objects.create(name='my bucket', user=self.user)
-        self.label_1 = Label.objects.create(name='Kitchen', bucket=self.bucket)
-        self.label_2 = Label.objects.create(name='Bathroom', bucket=self.bucket)
+        self.setUsers()
+        self.setBuckets()
+        self.setLabels()
+        self.setImages()
 
-    def test_save(self):
-        """
-        When a image is create a hash of the img needs to be compute
-        """
+    def setUsers(self):
+        self.user_1 = User.objects.create_user(username='user1', email='user@example.com', password='userexample')
+        self.user_2 = User.objects.create_user(username='user2', email='user2@example.com', password='userexample')
 
-        image_file = os.path.join(settings.MEDIA_ROOT, 'img1.jpg')
-        image = Image.objects.create(file=image_file, bucket=self.bucket)
-        self.assertEqual(image.hash, 'ec86cff8c9fab38b601df2fd579aacd3c788c4d18d0d9f7f243b4ab02f09dd60312672accdde90f08209665031cf248fb2a7b785c4bb2d267a0ffdeae4fa0c06')
+    def setBuckets(self):
+        self.bucket_1 = Bucket.objects.create(name='my bucket', user=self.user_1)
+        self.bucket_2 = Bucket.objects.create(name='my bucket 2', user=self.user_1)
 
-    def test_get_absolute_url(self):
-        image = Image.objects.create(file='img1.jpg', bucket=self.bucket)
-        self.assertEqual(image.get_absolute_url(), '/images/1/')
+    def setLabels(self):
+        self.label_1 = Label.objects.create(name='Kitchen', bucket=self.bucket_1)
+        self.label_2 = Label.objects.create(name='Bathroom', bucket=self.bucket_1)
+
+    def setImages(self):
+        self.image_1 = Image.objects.create(file='img1.jpg', bucket=self.bucket_1)
+        self.image_2 = Image.objects.create(file='img2.jpg', bucket=self.bucket_1)
+        self.image_3 = Image.objects.create(file='img3.jpg', bucket=self.bucket_1)
+        self.image_4 = Image.objects.create(file='img4.jpg', bucket=self.bucket_2)
+
+    def setVotes(self):
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_2, label=self.label_1, choice=False)
+        Vote.objects.create(user=self.user_1, image=self.image_3, label=self.label_1, choice=False)
+
+        Vote.objects.create(user=self.user_2, image=self.image_2, label=self.label_2, choice=True)
+        Vote.objects.create(user=self.user_2, image=self.image_3, label=self.label_2, choice=False)
 
     def test_get_random_image_with_no_vote(self):
-        image1 = Image.objects.create(file='img1.jpg', bucket=self.bucket)
-        image2 = Image.objects.create(file='img2.jpg', bucket=self.bucket)
-        image3 = Image.objects.create(file='img3.jpg', bucket=self.bucket)
-        vote1 = Vote.objects.create(user=self.user, image=image1)
-        vote1.labels.set([self.label_1, self.label_2])
-        vote2 = Vote.objects.create(user=self.user, image=image2)
-        vote2.labels.set([self.label_1])
+        """
+        A user who voted on an image with a specific label, will not have this image propose again.
+        """
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
 
-        random_image = get_random_image_with_no_vote(self.bucket)
-        self.assertEqual(random_image.id, image3.id)
+        random_image = get_all_images_ids_with_no_vote(label=self.label_1.id, user=self.user_1)
+
+        self.assertEqual(list(random_image), [2, 3])
+
+    def test_get_random_image_with_no_vote_other_label(self):
+        """
+        A user who voted on an image with a specific label, will not have this image propose again.
+        """
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_2, choice=True)
+
+        random_image = get_all_images_ids_with_no_vote(label=self.label_1.id, user=self.user_1)
+
+        self.assertEqual(list(random_image), [1, 2, 3])
+
+    def test_get_random_image_with_no_vote_other_user(self):
+        """
+        A user who voted on an image with a specific label, will not have this image propose again.
+        """
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+
+        random_image = get_all_images_ids_with_no_vote(label=self.label_1.id, user=self.user_2)
+
+        self.assertEqual(list(random_image), [1, 2, 3])
+
+    def test_get_random_image_with_no_vote_other_user(self):
+        """
+        A user who voted on an image with a specific label, will not have this image propose again.
+        """
+        self.setVotes()
+
+        user1_label1_images = get_all_images_ids_with_no_vote(label=self.label_1.id, user=self.user_1)
+        self.assertEqual(list(user1_label1_images), [])
+
+        user1_label2_images = get_all_images_ids_with_no_vote(label=self.label_2.id, user=self.user_1)
+        self.assertEqual(list(user1_label2_images), [1, 2, 3])
+
+        user2_label1_images = get_all_images_ids_with_no_vote(label=self.label_1.id, user=self.user_2)
+        self.assertEqual(list(user2_label1_images), [1, 2, 3])
+
+        user2_label2_images = get_all_images_ids_with_no_vote(label=self.label_2.id, user=self.user_2)
+        self.assertEqual(list(user2_label2_images), [1])
+
+
+
