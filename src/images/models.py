@@ -22,7 +22,7 @@ def upload_to(instance, filename):
 
 
 class Image(models.Model):
-    file = models.ImageField(upload_to=upload_to)
+    file = models.ImageField(upload_to=upload_to, max_length=132)
     bucket = models.ForeignKey('buckets.Bucket', on_delete=models.DO_NOTHING)
     hash = models.CharField(max_length=128, blank=True, null=True)
 
