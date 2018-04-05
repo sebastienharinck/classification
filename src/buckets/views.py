@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
-from django.views.generic import DetailView, TemplateView, ListView, CreateView, FormView
+from django.views.generic import DetailView, ListView, CreateView, FormView
 from django.shortcuts import reverse
+from django.db.models import Q
 
-from .models import Bucket, Label
 from .forms import *
 
 from images.models import *
@@ -16,16 +15,23 @@ class BucketsListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Bucket.objects.filter(user=self.request.user)
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['shared_buckets'] = Bucket.objects.filter(shared_users=self.request.user)
+        print(context['shared_buckets'])
+        return context
+
 
 class BucketDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
-        return Bucket.objects.all()
+        print(Bucket.objects.filter(Q(shared_users=self.request.user)))
+        return Bucket.objects.filter(Q(user=self.request.user) | Q(shared_users=self.request.user) )
 
     def get_context_data(self, *args, **kwargs):
         context = super(BucketDetailView, self).get_context_data(*args, **kwargs)
         bucket = Bucket.objects.get(pk=self.kwargs.get('pk'))
         context['images'] = Image.objects.filter(bucket=bucket.id)[0:20]
-        context['next_img'] = get_random_image_with_no_vote(bucket)
+        # context['next_img'] = get_random_image_with_no_vote(bucket)
         return context
 
 
@@ -70,9 +76,6 @@ class BucketAddLabelsView(LoginRequiredMixin, CreateView):
         return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
 
 
-from images.models import Image
-
-
 class VoteByLabelsView(LoginRequiredMixin, FormView):
     template_name = 'buckets/bucket_form_vote_by_labels.html'
     form_class = VoteFormSet
@@ -80,7 +83,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super(VoteByLabelsView, self).get_form_kwargs()
-        random_img = get_random_sample_image_with_no_vote(self.kwargs.get('label'), 8)
+        random_img = get_random_sample_image_with_no_vote(self.kwargs.get('label'), 8, self.request.user)
         if random_img:
             self.form_class.extra = len(random_img)
             self.images = Image.objects.filter(pk__in=random_img)
@@ -114,7 +117,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
 """
 todo : https://simpleisbetterthancomplex.com/tutorial/2016/11/22/django-multiple-file-upload-using-ajax.html
 """
-class UploadView(FormView):
+class UploadView(LoginRequiredMixin, FormView):
     template_name = 'buckets/bucket_form.html'
     form_class = UploadForm
 
@@ -131,7 +134,7 @@ class UploadView(FormView):
 
 
 # todo : securize
-class ImagesListView(ListView):
+class ImagesListView(LoginRequiredMixin, ListView):
     model = Image
     template_name = 'buckets/bucket_images.html'  # Default: <app_label>/<model_name>_list.html
     context_object_name = 'images'
@@ -139,3 +142,19 @@ class ImagesListView(ListView):
 
     def get_queryset(self):
         return Image.objects.filter(bucket=self.kwargs.get('pk'))
+
+
+class BucketInviteUser(LoginRequiredMixin, FormView):
+    template_name = 'buckets/bucket_form.html'
+    form_class = BucketInviteUserForm
+
+    def form_valid(self, form):
+        bucket = Bucket.objects.get(pk=self.kwargs.get('pk'), user=self.request.user)
+        form = BucketInviteUserForm(self.request.POST or None, instance=bucket)
+        if form.is_valid():
+            form.save()
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('buckets:list')

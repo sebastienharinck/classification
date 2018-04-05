@@ -5,12 +5,13 @@
     <h1>{{ object.name }}</h1>
 
 
-
-    {% if next_img %}
-        <a class="btn" href="{% url 'images:vote' next_img.id %}">Start classification</a>
-    {% else %}
-        Congratulations !   It seems that we have votes on all images.
-    {% endif %}
+    {% comment %}
+        {% if next_img %}
+            <a class="btn" href="{% url 'images:vote' next_img.id %}">Start classification</a>
+        {% else %}
+            Congratulations !   It seems that we have votes on all images.
+        {% endif %}
+    {% endcomment %}
 
     <div class="row">
         <h4>labels</h4>

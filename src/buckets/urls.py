@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:pk>/add-labels/', views.BucketAddLabelsView.as_view(), name='add_labels'),
     path('<int:bucket>/vote-by-labels/<int:label>/', views.VoteByLabelsView.as_view(), name='vote_by_labels'),
     path('<int:pk>/add-images/', views.UploadView.as_view(), name='add_images'),
+    path('<int:pk>/invite-user/', views.BucketInviteUser.as_view(), name='invite_user'),
 ]

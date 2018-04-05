@@ -4,26 +4,75 @@
 
     <div class="row">
 
-        <h2>My buckets</h2>
+        <h4>My buckets</h4>
         <a href="{% url 'buckets:create' %}" class="waves-effect waves-light btn"><i class="material-icons right">add_circle</i>Add bucket</a>
 
-        <ul class="collection with-header z-depth-1">
-            {% for bucket in object_list %}
-                <li class="collection-item">
-                    <div>
-                        <a href="{{ bucket.get_absolute_url }}">{{ bucket.name }}</a>
-                    </div>
-                </li>
-            {% empty %}
-                <li>No bucket yet.</li>
-            {% endfor %}
-
-        </ul>
+        <table class="highlight">
+            <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>owner</th>
+                  <th>shared users</th>
+                  <th>Labels</th>
+                  <th>images</th>
+                  <th>votes</th>
+                  <th>share</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for bucket in object_list %}
+                    <tr>
+                        <td><a href="{{ bucket.get_absolute_url }}">{{ bucket.name }}</a></td>
+                        <td>{{ bucket.user }}</td>
+                        <td>{{ bucket.shared_users.count }}</td>
+                        <td>
+                            {% for label in bucket.label_set.all %}
+                                <div class="chip">{{ label }}</div>
+                            {% endfor %}
+                        </td>
+                        <td>{{ bucket.image_set.count }}</td>
+                        <td>{{ bucket.image_set.vote }}</td>
+                        <td><a href="{% url 'buckets:invite_user' bucket.id %}"><i class="material-icons">group_add</i></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 
     <div class="row">
-        <h2>My shared buckets</h2>
+        <h4>My shared buckets</h4>
+
+
+        <table class="highlight">
+            <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>owner</th>
+                  <th>shared users</th>
+                  <th>Labels</th>
+                  <th>images</th>
+                  <th>votes</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for bucket in shared_buckets %}
+                    <tr>
+                        <td><a href="{{ bucket.get_absolute_url }}">{{ bucket.name }}</a></td>
+                        <td>{{ bucket.user }}</td>
+                        <td>{{ bucket.shared_users.count }}</td>
+                        <td>
+                            {% for label in bucket.label_set.all %}
+                                <div class="chip">{{ label }}</div>
+                            {% endfor %}
+                        </td>
+                        <td>{{ bucket.image_set.count }}</td>
+                        <td>{{ bucket.image_vote_set.all }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
     </div>
 
 {% endblock %}
