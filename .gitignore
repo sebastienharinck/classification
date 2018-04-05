@@ -8,6 +8,7 @@ src/**/__pycache__/
 src/img/
 src/.idea/
 src/*/settings/production.py
+src/app.yaml
 
 gcloud_client_secret.json
 
