@@ -1,48 +1,44 @@
-
-
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{% static 'buckets/vote.css' %}" />{% endblock %}
+
+
 {% block content %}
+    <div class="row">
 
+        <div class="row left">
+            <a href="{% url 'buckets:detail' label.bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+        </div>
 
-<div class="row">
+        <h1 class="center">{{ label.name }}</h1>
 
+        {% if images %}
+                <form method="post">{% csrf_token %}
+                    {{ form.management_form }}
 
-    <div class="row left">
-        <a href="{% url 'buckets:detail' label.bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+                    {% for f in form %}
+                    <div class="col m3 s6">
+                            {{ f.errors }}
+
+                            {{ f.image }}
+                            <div class="img-wrapper" style="background-image: url({{ f.fields.image.initial.file.url }}">
+                                {{ f.choice }}
+
+                                <label for="{{ f.choice.id_for_label }}"></label>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="row">
+                        <button class="btn waves-effect waves-light right" type="submit"><i class="material-icons right">send</i>VOTE</button>
+                    </div>
+                </form>
+
+        {% else %}
+            <p>Congratulations ! You vote on all images with the tag <b>{{ label.name }}</b>! You can start a new classification for this tags : XXX</p>
+        {% endif %}
+
     </div>
-
-    <h1 class="center">{{ label.name }}</h1>
-
-    {% if images %}
-        <form method="post">{% csrf_token %}
-            {{ form.management_form }}
-            {% for f in form %}
-                    {{ f.errors }}
-
-                    {{ f.image }}
-                    <span>
-                        {{ f.choice }}
-
-                        <label for="{{ f.choice.id_for_label }}">
-                            <img width="200" height="200" src="{{ f.fields.image.initial.file.url }}" alt="">
-                        </label>
-                    </span>
-            {% endfor %}
-            <div class="row">
-                <button class="btn waves-effect waves-light right" type="submit"><i class="material-icons right">send</i>VOTE</button>
-            </div>
-        </form>
-    {% else %}
-    Congratulations ! You vote on all images with the tag <b>{{ label.name }}</b>! You can start a new classification for this tags : XXX
-    {% endif %}
-
-
-
-
-
-
-</div>
-
-
 {% endblock %}
