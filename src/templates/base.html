@@ -13,14 +13,19 @@
 <body>
     <header>
         <nav>
-        <div class="nav-wrapper">
+        <div class="nav-wrapper container">
           <a href="#" class="brand-logo">Classification</a>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="{% url 'buckets:list' %}">My buckets</a></li>
-          </ul>
+          {% if user.is_authenticated %}
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                  <li><a class="btn" href="{% url 'buckets:list' %}">My buckets</a></li>
+                  <li><i class="material-icons left">account_circle</i>{{ user.get_username }}</li>
+              </ul>
+          {% endif %}
         </div>
       </nav>
     </header>
+
+
 
     <div class="container">
         {% block content %}{% endblock %}
