@@ -31,7 +31,7 @@
 
 
 
-    <div class="container">
+    <div class="container" style="padding-top: 15px;">
         {% block content %}{% endblock %}
     </div>
 
@@ -41,6 +41,10 @@
     <script>
          $(document).ready(function() {
             $('select').material_select();
+
+             $(document).ready(function(){
+                 $('.tooltipped').tooltip();
+             });
         });
     </script>
 

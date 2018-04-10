@@ -2,6 +2,14 @@
 
 {% block content %}
 
+    {% if bucket %}
+        <div class="col s12">
+            <a class="btn" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+        </div>
+
+        <h1>{{ bucket.name }}</h1>
+    {% endif %}
+
     <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <button class="btn waves-effect waves-light" type="submit"><i class="material-icons right">send</i>save</button>

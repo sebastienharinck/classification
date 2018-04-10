@@ -4,6 +4,11 @@
 {% block content %}
 
     <div class="row">
+        <a class="btn" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+    </div>
+
+    <h1>{{ bucket.name }}</h1>
+    <div class="row">
         {% for image in images %}
             {% if image.file %}
                 <a href="{% url 'images:vote' image.id %}"><img width="200" height="200" src="{{ image.file.url }}" alt=""></a>

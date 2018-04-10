@@ -1,30 +1,52 @@
 import random
-import os
-import hashlib
-
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.shortcuts import reverse
 
+from .utils import upload_to
 
-# todo : move in utils.py
-def upload_to(instance, filename):
-    instance.file.open()
+from buckets.models import Label
 
-    if not instance.hash:
-        instance_hash = hashlib.sha512(instance.file.read())
-        instance.hash = instance_hash.hexdigest()
-        instance.file.seek(0)
-    filename_base, filename_ext = os.path.splitext(filename)
 
-    return "{0}{1}".format(instance.hash, filename_ext)
+class ImageManager(models.Manager):
+    @staticmethod
+    def get_all_ids_with_no_vote(label, user=None):
+        label = Label.objects.get(pk=label)
+
+        q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
+        q = q.values_list('id', flat=True)
+
+        return q
+
+    @staticmethod
+    def get_random_with_no_vote(bucket):
+        ids = ImageManager.get_all_ids_with_no_vote(bucket)
+        if not ids:
+            return False
+        rand = random.choice(ids)
+        return Image.objects.filter(pk=rand)
+
+    @staticmethod
+    def get_samples_with_no_vote(label, number, user=None):
+        ids = ImageManager.get_all_ids_with_no_vote(label, user)
+        if not ids:
+            return False
+        ids_size = len(ids)
+        if ids_size > number:
+            rand = random.sample(list(ids), number)
+        else:
+            rand = random.sample(list(ids), ids_size)
+        return Image.objects.filter(id__in=rand)
 
 
 class Image(models.Model):
     file = models.ImageField(upload_to=upload_to, max_length=133)
     bucket = models.ForeignKey('buckets.Bucket', on_delete=models.DO_NOTHING)
     hash = models.CharField(max_length=128, blank=True, null=True)
+
+    objects = ImageManager()
 
     def get_absolute_url(self):
         return reverse('images:detail', kwargs={'pk': self.pk})

@@ -2,6 +2,8 @@
 
 {% block content %}
 
+
+
     <h1>{{ object.name }}</h1>
     <div class="row">
         {% for label in object.label_set.all %}
@@ -11,13 +13,13 @@
         {% endfor %}
     </div>
     <div class="row">
-        <a class="btn" href="{% url 'buckets:add_labels' object.id %}">add labels</a>
-        <a class="btn" href="{% url 'buckets:add_images' object.id %}">add images</a>
-        <a class="btn" href="{% url 'buckets:invite_user' object.id %}">add users</a>
+        <a class="btn" href="{% url 'buckets:add_labels' object.id %}"><i class="material-icons left">label</i>add labels</a>
+        <a class="btn" href="{% url 'buckets:add_images' object.id %}"><i class="material-icons left">add_a_photo</i>add images</a>
+        <a class="btn" href="{% url 'buckets:invite_user' object.id %}"><i class="material-icons left">group_add</i>add users</a>
     </div>
     <div class="row">
-        <a class="btn" href="{% url 'buckets:images' object.id %}">Display images</a>
-        <a class="btn" href="{% url 'buckets:votes' object.id %}">Display votes</a>
+        <a class="btn" href="{% url 'buckets:images' object.id %}"><i class="material-icons left">filter</i>Display images</a>
+        <a class="btn" href="{% url 'buckets:votes' object.id %}"><i class="material-icons left">comment</i>Display votes</a>
     </div>
 
 {% endblock %}

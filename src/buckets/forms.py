@@ -1,8 +1,5 @@
-import random
-
 from django import forms
 from django.forms import modelformset_factory
-from django.db.models import Q
 from django.forms.formsets import BaseFormSet
 
 from .models import Bucket, Label
@@ -67,32 +64,3 @@ class BucketInviteUserForm(forms.ModelForm):
     class Meta:
         model = Bucket
         fields = ['shared_users']
-
-
-def get_all_images_ids_with_no_vote(label, user=None):
-    label = Label.objects.get(pk=label)
-
-    q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
-    q = q.values_list('id', flat=True)
-
-    return q
-
-
-def get_random_image_with_no_vote(bucket):
-    ids = get_all_images_ids_with_no_vote(bucket)
-    if not ids:
-        return False
-    rand = random.choice(ids)
-    return Image.objects.filter(pk=rand)
-
-
-def get_random_sample_image_with_no_vote(label, number, user=None):
-    ids = get_all_images_ids_with_no_vote(label, user)
-    if not ids:
-        return False
-    ids_size = len(ids)
-    if ids_size > number:
-        rand = random.sample(list(ids), number)
-    else:
-        rand = random.sample(list(ids), ids_size)
-    return Image.objects.filter(id__in=rand)
