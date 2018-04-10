@@ -8,14 +8,14 @@
 {% block content %}
     <div class="row">
 
-        <a class="btn" href="{% url 'buckets:detail' label.bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+        <a class="btn green darken-2" href="{% url 'buckets:detail' label.bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
 
         <h1 class="center">{{ label.name }}</h1>
 
-        <span class="btn tooltipped" data-position="bottom" data-tooltip="Progression pour ce label"><i class="material-icons right">trending_up</i>{{ vote_percent_for_the_label }}%</span>
+        <span class="btn tooltipped green" data-position="bottom" data-tooltip="Progression pour ce label"><i class="material-icons right">trending_up</i>{{ vote_percent_for_the_label }}%</span>
 
         <div class="progress">
-          <div class="determinate" style="width: {{ vote_percent_for_the_label }}%"></div>
+          <div class="determinate green" style="width: {{ vote_percent_for_the_label }}%"></div>
       </div>
 
         {% if images %}

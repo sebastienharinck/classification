@@ -4,7 +4,7 @@
 {% block content %}
 
     <div class="row">
-        <a class="btn" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+        <a class="btn green darken-2" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
         <h1>{{ bucket.name }}</h1>
         <div class="row">
             <table class="highlight">

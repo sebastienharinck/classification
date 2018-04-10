@@ -12,17 +12,17 @@
 </head>
 <body>
     <header>
-        <nav>
+        <nav class="blue darken-2">
         <div class="nav-wrapper container">
           <a href="#" class="brand-logo">Classification</a>
 
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 {% if user.is_authenticated %}
-                    <li><a class="btn" href="{% url 'buckets:list' %}">My buckets</a></li>
+                    <li><a class="btn green darken-2" href="{% url 'buckets:list' %}">My buckets</a></li>
                     <li><i class="material-icons left">account_circle</i>{{ user.get_username }}</li>
                     <li><a href="{% url 'logout' %}">déconnexion</a></li>
                 {% else %}
-                    <li><a class="btn" href="{% url 'login' %}">Se connecter</a></li>
+                    <li><a class="btn green darken-2" href="{% url 'login' %}">Se connecter</a></li>
                 {% endif %}
             </ul>
         </div>
