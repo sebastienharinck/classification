@@ -54,6 +54,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'classification.urls'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'buckets:list'
 
 TEMPLATES = [
     {
