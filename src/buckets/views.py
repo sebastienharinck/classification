@@ -23,9 +23,7 @@ class BucketsListView(LoginRequiredMixin, ListView):
 
 
 class BucketDetailView(LoginRequiredMixin, DetailView):
-    def get_queryset(self):
-        print(Bucket.objects.filter(Q(shared_users=self.request.user)))
-        return Bucket.objects.filter(Q(user=self.request.user) | Q(shared_users=self.request.user) )
+    model = Bucket
 
     def get_context_data(self, *args, **kwargs):
         context = super(BucketDetailView, self).get_context_data(*args, **kwargs)
