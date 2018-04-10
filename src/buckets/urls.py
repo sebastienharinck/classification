@@ -8,6 +8,7 @@ urlpatterns = [
     path('create/', views.BucketCreateView.as_view(), name='create'),
     path('<int:pk>/', views.BucketDetailView.as_view(), name='detail'),
     path('<int:pk>/images/', views.ImagesListView.as_view(), name='images'),
+    path('<int:pk>/votes/', views.VotesListView.as_view(), name='votes'),
     path('<int:pk>/add-labels/', views.BucketAddLabelsView.as_view(), name='add_labels'),
     path('<int:bucket>/vote-by-labels/<int:label>/', views.VoteByLabelsView.as_view(), name='vote_by_labels'),
     path('<int:pk>/add-images/', views.UploadView.as_view(), name='add_images'),

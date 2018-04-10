@@ -1,0 +1,78 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <a href="{% url 'buckets:detail' bucket_id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+        <h4>Votes</h4>
+        <div class="row">
+            <table class="highlight">
+                <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>user</th>
+                      <th>Image</th>
+                      <th>Labels</th>
+                      <th>vote</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for vote in votes %}
+                        <tr>
+                            <td>{{ vote.created_at }}</td>
+                            <td>{{ vote.user }}</td>
+                            <td><a href="{{ vote.image.get_absolute_url }}">{{ vote.image.get_absolute_url }}</a></td>
+                            <td>
+                                <div class="chip">{{ vote.label }}</div>
+                            </td>
+                            <td>
+                                {% if vote.choice %}
+                                    <i class="material-icons green-text">check</i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% if is_paginated %}
+      <ul class="pagination center">
+        {% if page_obj.has_previous %}
+          <li><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+
+        {% for i in paginator.page_range %}
+          {% if i == 1 and page_obj.number != i %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% elif page_obj.number == i %}
+            <li class="active"><a href="#">{{ i }}</a></li>
+          {% elif i|add:"4" > page_obj.number and page_obj.number > i|add:"-4" %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% elif i == page_obj.number|add:"4" or i == page_obj.number|add:"-4" %}
+            <li class="disabled"><a href="#">...</a></li>
+          {% elif i == paginator.page_range|length %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li><a href="?page={{ page_obj.next_page_number }}"><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
+{% endblock %}

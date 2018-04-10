@@ -3,74 +3,21 @@
 {% block content %}
 
     <h1>{{ object.name }}</h1>
-
-
-    {% comment %}
-        {% if next_img %}
-            <a class="btn" href="{% url 'images:vote' next_img.id %}">Start classification</a>
-        {% else %}
-            Congratulations !   It seems that we have votes on all images.
-        {% endif %}
-    {% endcomment %}
-
     <div class="row">
-        <h4>labels</h4>
         {% for label in object.label_set.all %}
         <div class="chip">
             <a href="{% url 'buckets:vote_by_labels' bucket=label.bucket.id label=label.id %}">{{ label.name }}</a>
         </div>
         {% endfor %}
-        <a href="{% url 'buckets:add_labels' object.id %}">add labels</a>
     </div>
-
     <div class="row">
-        <h4>Images</h4>
-        <a href="{% url 'buckets:add_images' object.id %}">add images</a> /
-        <a href="{% url 'buckets:images' object.id %}">display all images</a>
-
-        <div class="row">
-            {% for image in images %}
-                {% if image.file %}
-                    <a href="{% url 'images:vote' image.id %}"><img width="200" height="200" src="{{ image.file.url }}" alt=""></a>
-                {% endif %}
-            {% empty %}
-                No images provided.
-            {% endfor %}
-        </div>
+        <a class="btn" href="{% url 'buckets:add_labels' object.id %}">add labels</a>
+        <a class="btn" href="{% url 'buckets:add_images' object.id %}">add images</a>
+        <a class="btn" href="{% url 'buckets:invite_user' object.id %}">add users</a>
     </div>
-
     <div class="row">
-        <h4>Votes</h4>
-        <div class="row">
-            <table class="highlight">
-                <thead>
-                  <tr>
-                      <th>Date</th>
-                      <th>user</th>
-                      <th>Image</th>
-                      <th>Labels</th>
-                      <th>vote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {% for vote in object.get_all_votes %}
-                        <tr>
-                            <td>{{ vote.created_at }}</td>
-                            <td>{{ vote.user }}</td>
-                            <td><a href="{{ vote.image.get_absolute_url }}">{{ vote.image.get_absolute_url }}</a></td>
-                            <td>
-                                <div class="chip">{{ vote.label }}</div>
-                            </td>
-                            <td>
-                                {% if vote.choice %}
-                                    <i class="material-icons green-text">check</i>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <a class="btn" href="{% url 'buckets:images' object.id %}">Display images</a>
+        <a class="btn" href="{% url 'buckets:votes' object.id %}">Display votes</a>
     </div>
 
 {% endblock %}

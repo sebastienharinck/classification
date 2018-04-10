@@ -29,7 +29,7 @@ class BucketDetailView(LoginRequiredMixin, DetailView):
         context = super(BucketDetailView, self).get_context_data(*args, **kwargs)
         bucket = Bucket.objects.get(pk=self.kwargs.get('pk'))
         context['images'] = Image.objects.filter(bucket=bucket.id)[0:20]
-        # context['next_img'] = get_random_image_with_no_vote(bucket)
+        context['votes'] = Vote.objects.filter(label__bucket=self.kwargs.get('pk'))[0:20]
         return context
 
 
@@ -140,6 +140,21 @@ class ImagesListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Image.objects.filter(bucket=self.kwargs.get('pk'))
+
+
+class VotesListView(LoginRequiredMixin, ListView):
+    model = Vote
+    template_name = 'buckets/bucket_votes.html'
+    context_object_name = 'votes'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Vote.objects.filter(label__bucket=self.kwargs.get('pk'))
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['bucket_id'] = self.kwargs.get('pk')
+        return context
 
 
 class BucketInviteUser(LoginRequiredMixin, FormView):
