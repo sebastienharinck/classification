@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <a class="btn green darken-2" href="{% url 'projects:list' %}">
+            <i class="material-icons left">arrow_back</i> Back to my projects
+        </a>
+        <h1>{{ project.name }}</h1>
+        <p>{{ project.description }}</p>
+    </div>
+
+
+
+
+{% endblock %}

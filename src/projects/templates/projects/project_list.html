@@ -13,9 +13,9 @@
               </tr>
             </thead>
             <tbody>
-                {% for project in object_list %}
+                {% for project in projects %}
                     <tr>
-                        <td><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></td>
+                        <td><a href="{% url 'projects:detail' project.id %}">{{ project.name }}</a></td>
                         <td>{{ project.user }}</td>
                         <td>{{ project.description }}</td>
                     </tr>
