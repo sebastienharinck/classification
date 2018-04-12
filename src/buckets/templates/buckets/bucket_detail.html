@@ -6,7 +6,7 @@
     <div class="row">
         <h4>labels</h4>
         {% for label in bucket.labels.all %}
-            <a class="btn blue" href="#">{{ label.name }}</a>
+            <a class="btn blue" href="{% url 'buckets:vote_by_labels' bucket=bucket.id label=label.id %}">{{ label.name }}</a>
         {% endfor %}
     </div>
     <div class="row">

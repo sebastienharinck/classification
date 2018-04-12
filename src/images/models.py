@@ -12,10 +12,10 @@ from buckets.models import Label
 
 class ImageManager(models.Manager):
     @staticmethod
-    def get_all_ids_with_no_vote(label, user=None):
+    def get_all_ids_with_no_vote(bucket, label, user=None):
         label = Label.objects.get(pk=label)
 
-        q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
+        q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=bucket)
 
         """
         solution pour ne pas voter plusieurs fois sur une image :
@@ -40,8 +40,8 @@ class ImageManager(models.Manager):
         return Image.objects.filter(pk=rand)
 
     @staticmethod
-    def get_samples_with_no_vote(label, number, user=None):
-        ids = ImageManager.get_all_ids_with_no_vote(label, user)
+    def get_samples_with_no_vote(bucket, label, number, user=None):
+        ids = ImageManager.get_all_ids_with_no_vote(bucket, label, user)
         if not ids:
             return False
         ids_size = len(ids)

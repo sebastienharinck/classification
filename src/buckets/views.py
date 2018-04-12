@@ -58,7 +58,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super(VoteByLabelsView, self).get_form_kwargs()
-        random_img = Image.objects.get_samples_with_no_vote(self.kwargs.get('label'), 8, self.request.user)
+        random_img = Image.objects.get_samples_with_no_vote(self.kwargs.get('bucket'), self.kwargs.get('label'), 8, self.request.user)
         if random_img:
             self.form_class.extra = len(random_img)
             self.images = Image.objects.filter(pk__in=random_img)
@@ -73,7 +73,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
         context['images'] = self.images
         label = Label.objects.get(pk=self.kwargs.get('label'))
         context['label'] = label
-        nb_images = Image.objects.filter(bucket=label.bucket).count()
+        nb_images = Image.objects.filter(bucket=self.kwargs.get('bucket')).count()
         nb_available_votes_on_bucket_by_user = nb_images
         nb_votes = Vote.objects.filter(label=label, user=self.request.user).count()
         vote_percent_for_the_label = nb_votes / nb_available_votes_on_bucket_by_user
