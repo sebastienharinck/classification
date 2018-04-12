@@ -2,6 +2,13 @@
 
 {% block content %}
 
+    <div class="row">
+        <a class="btn green darken-2" href="{% url 'projects:list' %}">
+            <i class="material-icons left">arrow_back</i> Back to my projects
+        </a>
+    </div>
+
+
     <h1>Create Project</h1>
 
     <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
