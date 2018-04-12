@@ -12,22 +12,34 @@
 </head>
 <body>
     <header>
-        <nav class="blue darken-2">
-        <div class="nav-wrapper container">
-          <a href="#" class="brand-logo">Classification</a>
 
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                {% if user.is_authenticated %}
-                    <li><a class="btn green darken-2" href="{% url 'projects:list' %}">My projects</a></li>
-                    <li><a class="btn green darken-2" href="{% url 'buckets:list' %}">My buckets</a></li>
-                    <li><i class="material-icons left">account_circle</i>{{ user.get_username }}</li>
-                    <li><a href="{% url 'logout' %}">déconnexion</a></li>
-                {% else %}
-                    <li><a class="btn green darken-2" href="{% url 'login' %}">Se connecter</a></li>
-                {% endif %}
-            </ul>
-        </div>
-      </nav>
+        <ul id="dropdown" class="dropdown-content collection">
+            <li><a href="{% url 'logout' %}">déconnexion</a></li>
+        </ul>
+
+
+        <ul id="dropdown1" class="dropdown-content">
+          <li><a href="#!">one</a></li>
+          <li><a href="#!">two</a></li>
+          <li class="divider"></li>
+          <li><a href="#!">three</a></li>
+        </ul>
+        <nav class="blue darken-2">
+            <div class="nav-wrapper container">
+              <a href="#" class="brand-logo">Classification</a>
+
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    {% if user.is_authenticated %}
+                        <li><a class="btn green darken-2" href="{% url 'projects:list' %}">My projects</a></li>
+                        <li><a class="btn green darken-2" href="{% url 'buckets:list' %}">My buckets</a></li>
+                        <li><a class="dropdown-button" href="#" data-activates="dropdown" data-beloworigin="true"> <i class="material-icons left">account_circle</i>{{ user.get_username }}<i class="material-icons right">arrow_drop_down</i></a></li>
+
+                    {% else %}
+                        <li><a class="btn green darken-2" href="{% url 'login' %}">Se connecter</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
     </header>
 
 
@@ -42,10 +54,8 @@
     <script>
          $(document).ready(function() {
             $('select').material_select();
-
-             $(document).ready(function(){
-                 $('.tooltipped').tooltip();
-             });
+            $('.tooltipped').tooltip();
+            $(".dropdown-trigger").dropdown();
         });
     </script>
 
