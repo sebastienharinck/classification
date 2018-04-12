@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from .models import Project
 
 
-class ProjectsListView(LoginRequiredMixin, ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
 
     def get_queryset(self):
