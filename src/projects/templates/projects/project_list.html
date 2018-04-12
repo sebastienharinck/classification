@@ -2,7 +2,7 @@
 
 {% block content %}
     <h4>My Projects</h4>
-        <a href="" class="btn green darken-2"><i class="material-icons right">add_circle</i>Add Project</a>
+        <a href="{% url 'projects:create' %}" class="btn green darken-2"><i class="material-icons right">add_circle</i>Add Project</a>
 
         <table class="highlight">
             <thead>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Create Project</h1>
+
+    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn waves-effect waves-light" type="submit"><i class="material-icons right">send</i>save</button>
+    </form>
+
+{% endblock %}
