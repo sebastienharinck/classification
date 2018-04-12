@@ -16,6 +16,17 @@ class ImageManager(models.Manager):
         label = Label.objects.get(pk=label)
 
         q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
+
+        """
+        solution pour ne pas voter plusieurs fois sur une image :
+        il faut que user soit bien dans le truc. 
+        
+        
+        q = Image.objects.filter(~Q(vote__image__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
+        
+        """
+
+
         q = q.values_list('id', flat=True)
 
         return q
