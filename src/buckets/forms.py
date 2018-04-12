@@ -9,7 +9,7 @@ from images.models import Image, Vote
 class BucketForm(forms.ModelForm):
     class Meta:
         model = Bucket
-        fields = ['name']
+        fields = ['name', 'project']
 
     def __init__(self, user=None, *args, **kwargs):
         super(BucketForm, self).__init__(*args, **kwargs)
