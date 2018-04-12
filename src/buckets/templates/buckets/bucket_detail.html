@@ -2,24 +2,24 @@
 
 {% block content %}
 
-    <h1>{{ object.name }}</h1>
+    <h1>{{ bucket.name }}</h1>
     <div class="row">
         <h4>labels</h4>
-        {% for label in object.label_set.all %}
-            <a class="btn blue" href="{% url 'buckets:vote_by_labels' bucket=label.bucket.id label=label.id %}">{{ label.name }}</a>
+        {% for label in bucket.labels.all %}
+            <a class="btn blue" href="#">{{ label.name }}</a>
         {% endfor %}
     </div>
     <div class="row">
         <h4>actions</h4>
     </div>
     <div class="row">
-        <a class="btn green" href="{% url 'buckets:add_labels' object.id %}"><i class="material-icons left">label</i>add labels</a>
-        <a class="btn green" href="{% url 'buckets:add_images' object.id %}"><i class="material-icons left">add_a_photo</i>add images</a>
-        <a class="btn green" href="{% url 'buckets:invite_user' object.id %}"><i class="material-icons left">group_add</i>add users</a>
+        <a class="btn green" href="{% url 'buckets:add_labels' bucket.id %}"><i class="material-icons left">label</i>choose labels</a>
+        <a class="btn green" href="{% url 'buckets:add_images' bucket.id %}"><i class="material-icons left">add_a_photo</i>add images</a>
+        <a class="btn green" href="{% url 'buckets:invite_user' bucket.id %}"><i class="material-icons left">group_add</i>add users</a>
     </div>
     <div class="row">
-        <a class="btn orange" href="{% url 'buckets:images' object.id %}"><i class="material-icons left">filter</i>Display images</a>
-        <a class="btn orange" href="{% url 'buckets:votes' object.id %}"><i class="material-icons left">comment</i>Display votes</a>
+        <a class="btn orange" href="{% url 'buckets:images' bucket.id %}"><i class="material-icons left">filter</i>Display images</a>
+        <a class="btn orange" href="{% url 'buckets:votes' bucket.id %}"><i class="material-icons left">comment</i>Display votes</a>
     </div>
 
 {% endblock %}

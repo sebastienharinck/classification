@@ -17,11 +17,12 @@ class BucketForm(forms.ModelForm):
 
 class BucketAddLabelsForm(forms.ModelForm):
     class Meta:
-        model = Label
-        fields = ['name']
+        model = Bucket
+        fields = ['labels']
 
-    def __init__(self, bucket=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(BucketAddLabelsForm, self).__init__(*args, **kwargs)
+        self.fields['labels'].queryset = Label.objects.filter(project=self.instance.project)
 
 
 class UploadForm(forms.Form):

@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
-from django.views.generic import DetailView, ListView, CreateView, FormView
+from django.views.generic import DetailView, ListView, CreateView, FormView, UpdateView
 from django.shortcuts import reverse
 
 from .forms import *
@@ -23,13 +23,6 @@ class BucketsListView(LoginRequiredMixin, ListView):
 class BucketDetailView(LoginRequiredMixin, DetailView):
     model = Bucket
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(BucketDetailView, self).get_context_data(*args, **kwargs)
-        bucket = Bucket.objects.get(pk=self.kwargs.get('pk'))
-        context['images'] = Image.objects.filter(bucket=bucket.id)[0:20]
-        context['votes'] = Vote.objects.filter(label__bucket=self.kwargs.get('pk'))[0:20]
-        return context
-
 
 class BucketCreateView(LoginRequiredMixin, CreateView):
     model = Bucket
@@ -49,32 +42,13 @@ class BucketCreateView(LoginRequiredMixin, CreateView):
         return reverse('buckets:list')
 
 
-class BucketAddLabelsView(LoginRequiredMixin, CreateView):
-    model = Label
+class BucketAddLabelsView(LoginRequiredMixin, UpdateView):
+    model = Bucket
     form_class = BucketAddLabelsForm
     template_name = 'buckets/bucket_form.html'
 
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
-        if not bucket.exists():
-            return HttpResponseForbidden()
-        obj.bucket = bucket.first()
-        return super(BucketAddLabelsView, self).form_valid(form)
-
-    def get_form_kwargs(self):
-        kwargs = super(BucketAddLabelsView, self).get_form_kwargs()
-        bucket = Bucket.objects.filter(pk=self.kwargs.get('pk'), user=self.request.user)
-        kwargs['bucket'] = bucket.first()
-        return kwargs
-
     def get_success_url(self):
         return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['bucket'] = Bucket.objects.get(pk=self.kwargs.get('pk'))
-        return context
 
 
 class VoteByLabelsView(LoginRequiredMixin, FormView):
