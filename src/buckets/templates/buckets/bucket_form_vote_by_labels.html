@@ -8,9 +8,9 @@
 {% block content %}
     <div class="row">
 
-        <a class="btn green darken-2" href=""><i class="material-icons left">arrow_back</i> Back to the bucket</a>
 
-        <h1 class="center">{{ label.name }}</h1>
+
+        <h2 class="center">{{ label.name }}</h2>
 
         <span class="btn tooltipped green" data-position="bottom" data-tooltip="Progression pour ce label"><i class="material-icons right">trending_up</i>{{ vote_percent_for_the_label }}%</span>
 
@@ -35,7 +35,8 @@
                         </div>
                     {% endfor %}
 
-                    <div class="row">
+                    <div class="col s12">
+                        <a class="btn green darken-2" href=""><i class="material-icons left">arrow_back</i> Back to the bucket</a>
                         <button class="btn waves-effect waves-light right" type="submit"><i class="material-icons right">send</i>VOTE</button>
                     </div>
                 </form>
