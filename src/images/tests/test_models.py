@@ -115,3 +115,34 @@ class ImageModelTest(TestCase):
         user1_label1_images = Image.objects.get_samples_with_no_vote(bucket=self.bucket_2, label=self.label_1.id, number=8, user=self.user_1)
         user1_label1_images = user1_label1_images.values_list('id', flat=True)
         self.assertEqual(list(user1_label1_images), [4, 8])
+
+
+class UploadImageTest(TestCase):
+    def setUp(self):
+        self.setUsers()
+        self.setProjects()
+        self.setBuckets()
+        self.setImages()
+
+    def setUsers(self):
+        self.user_1 = User.objects.create_user(username='user1', email='user@example.com', password='userexample')
+
+    def setProjects(self):
+        self.project_1 = Project.objects.create(name="Project 1", description='My custom project 1', user=self.user_1)
+
+    def setBuckets(self):
+        self.bucket_1 = Bucket.objects.create(name='my bucket', user=self.user_1, project=self.project_1)
+
+    def setImages(self):
+        self.image_1 = Image.objects.create(file='img1.jpg', hash='1111', bucket=self.bucket_1)
+        self.image_2 = Image.objects.create(file='img2.jpg', hash='2222', bucket=self.bucket_1)
+
+    def test_upload_images(self):
+        """
+        When a user upload images, a image with a same hash will not be upload
+        """
+        Image.objects.create(file='img3.jpg', hash='1111', bucket=self.bucket_1)
+
+        images = Image.objects.filter(bucket=self.bucket_1).values_list('id', flat=True)
+
+        self.assertEqual(list(images), [1, 2])

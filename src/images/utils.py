@@ -2,7 +2,6 @@ import hashlib
 import os
 
 
-# todo : move in utils.py
 def upload_to(instance, filename):
     instance.file.open()
 

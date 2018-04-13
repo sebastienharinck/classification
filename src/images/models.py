@@ -1,3 +1,4 @@
+import hashlib
 import random
 
 from django.db import models
@@ -54,6 +55,12 @@ class Image(models.Model):
 
     def get_absolute_url(self):
         return reverse('images:detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        if not self.hash:
+            self.hash = hashlib.sha256(self.file.read()).hexdigest()
+        if not Image.objects.filter(hash=self.hash, bucket=self.bucket).exists():
+            super().save(*args, **kwargs)
 
 
 class Vote(models.Model):
