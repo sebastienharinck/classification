@@ -5,7 +5,7 @@ from images.forms import VoteForm
 from buckets.models import Bucket, Label
 from images.models import Image, Vote
 
-
+"""
 class ImageFormTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user', email='user@example.com', password='userexample')
@@ -13,6 +13,8 @@ class ImageFormTest(TestCase):
         self.image = Image.objects.create(file='img1.jpg', bucket=self.bucket)
         self.label1 = Label.objects.create(name='Kitchen', bucket=self.bucket)
         self.label2 = Label.objects.create(name='Bathroom', bucket=self.bucket)
+        
+"""
 
     #def test_vote_form(self):
     #    vote = Vote(pk=1, user=self.user, image=self.image, bucket=self.bucket)

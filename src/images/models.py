@@ -13,20 +13,13 @@ from buckets.models import Label
 class ImageManager(models.Manager):
     @staticmethod
     def get_all_ids_with_no_vote(bucket, label, user=None):
+        """
+        @todo : improve the request
+        """
         label = Label.objects.get(pk=label)
 
-        q = Image.objects.filter(~Q(vote__in=Vote.objects.filter(label=label, user=user)), bucket=bucket)
-
-        """
-        solution pour ne pas voter plusieurs fois sur une image :
-        il faut que user soit bien dans le truc. 
-        
-        
-        q = Image.objects.filter(~Q(vote__image__in=Vote.objects.filter(label=label, user=user)), bucket=label.bucket)
-        
-        """
-
-
+        hashes = Image.objects.filter(vote__in=Vote.objects.filter(label=label, user=user)).values_list('hash', flat=True)
+        q = Image.objects.filter(~Q(hash__in=hashes), bucket=bucket)
         q = q.values_list('id', flat=True)
 
         return q
@@ -43,7 +36,7 @@ class ImageManager(models.Manager):
     def get_samples_with_no_vote(bucket, label, number, user=None):
         ids = ImageManager.get_all_ids_with_no_vote(bucket, label, user)
         if not ids:
-            return False
+            return []
         ids_size = len(ids)
         if ids_size > number:
             rand = random.sample(list(ids), number)
