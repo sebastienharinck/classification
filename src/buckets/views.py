@@ -73,6 +73,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
         context['images'] = self.images
         label = Label.objects.get(pk=self.kwargs.get('label'))
         context['label'] = label
+        context['bucket'] = Bucket.objects.get(pk=self.kwargs.get('bucket'))
         nb_images = Image.objects.filter(bucket=self.kwargs.get('bucket')).count()
         nb_available_votes_on_bucket_by_user = nb_images
         nb_votes = Vote.objects.filter(label=label, user=self.request.user).count()

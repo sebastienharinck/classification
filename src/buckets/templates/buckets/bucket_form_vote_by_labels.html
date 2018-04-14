@@ -34,13 +34,14 @@
                     {% endfor %}
 
                     <div class="col s12">
-                        <a class="btn green darken-2" href=""><i class="material-icons left">arrow_back</i> Back to the bucket</a>
+                        <a class="btn green darken-2" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
                         <button class="btn waves-effect waves-light right" type="submit"><i class="material-icons right">send</i>VOTE</button>
                     </div>
                 </form>
 
         {% else %}
-            <p>Congratulations ! You vote on all images with the tag <b>{{ label.name }}</b>! You can start a new classification for this tags : XXX</p>
+            <p>Congratulations ! You finish the classification on <b>{{ label.name }}</b> ! You can start a new classification :</p>
+            <a class="btn green darken-2" href="{% url 'buckets:detail' bucket.id %}"><i class="material-icons left">arrow_back</i> Back to the bucket</a>
         {% endif %}
 
     </div>
