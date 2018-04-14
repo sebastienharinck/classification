@@ -12,25 +12,18 @@
 </head>
 <body>
     <header>
-
         <ul id="dropdown" class="dropdown-content collection">
             <li><a href="{% url 'logout' %}">déconnexion</a></li>
         </ul>
-
-
-        <ul id="dropdown1" class="dropdown-content">
-          <li><a href="#!">one</a></li>
-          <li><a href="#!">two</a></li>
-          <li class="divider"></li>
-          <li><a href="#!">three</a></li>
-        </ul>
         <nav class="blue darken-2">
             <div class="nav-wrapper container">
-              <a href="#" class="brand-logo">Classification</a>
+              <a href="{% url 'home' %}" class="brand-logo">Classification</a>
 
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     {% if user.is_authenticated %}
-                        <li><a class="btn green darken-2" href="{% url 'projects:list' %}">My projects</a></li>
+                        {% if user.is_superuser %}
+                            <li><a class="btn green darken-2" href="{% url 'projects:list' %}">My projects</a></li>
+                        {% endif %}
                         <li><a class="btn green darken-2" href="{% url 'buckets:list' %}">My buckets</a></li>
                         <li><a class="dropdown-button" href="#" data-activates="dropdown" data-beloworigin="true"> <i class="material-icons left">account_circle</i>{{ user.get_username }}<i class="material-icons right">arrow_drop_down</i></a></li>
 

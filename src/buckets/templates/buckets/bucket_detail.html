@@ -9,17 +9,20 @@
             <a class="btn blue" href="{% url 'buckets:vote_by_labels' bucket=bucket.id label=label.id %}">{{ label.name }}</a>
         {% endfor %}
     </div>
-    <div class="row">
-        <h4>actions</h4>
-    </div>
-    <div class="row">
-        <a class="btn green" href="{% url 'buckets:add_labels' bucket.id %}"><i class="material-icons left">label</i>choose labels</a>
-        <a class="btn green" href="{% url 'buckets:add_images' bucket.id %}"><i class="material-icons left">add_a_photo</i>add images</a>
-        <a class="btn green" href="{% url 'buckets:invite_user' bucket.id %}"><i class="material-icons left">group_add</i>add users</a>
-    </div>
-    <div class="row">
-        <a class="btn orange" href="{% url 'buckets:images' bucket.id %}"><i class="material-icons left">filter</i>Display images</a>
-        <a class="btn orange" href="{% url 'buckets:votes' bucket.id %}"><i class="material-icons left">comment</i>Display votes</a>
-    </div>
+
+    {% if user.is_superuser %}
+        <div class="row">
+            <h4>actions</h4>
+        </div>
+        <div class="row">
+            <a class="btn green" href="{% url 'buckets:add_labels' bucket.id %}"><i class="material-icons left">label</i>choose labels</a>
+            <a class="btn green" href="{% url 'buckets:add_images' bucket.id %}"><i class="material-icons left">add_a_photo</i>add images</a>
+            <a class="btn green" href="{% url 'buckets:invite_user' bucket.id %}"><i class="material-icons left">group_add</i>add users</a>
+        </div>
+        <div class="row">
+            <a class="btn orange" href="{% url 'buckets:images' bucket.id %}"><i class="material-icons left">filter</i>Display images</a>
+            <a class="btn orange" href="{% url 'buckets:votes' bucket.id %}"><i class="material-icons left">comment</i>Display votes</a>
+        </div>
+    {% endif %}
 
 {% endblock %}
