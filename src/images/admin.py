@@ -9,6 +9,8 @@ class HashAdmin(admin.ModelAdmin):
 
 class CreateAtAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', )
+    list_display = ['image', 'user', 'label', 'choice']
+    search_fields = ('label__name', 'image__hash', 'user__username')
 
 
 admin.site.register(Image, HashAdmin)

@@ -53,6 +53,9 @@ class Image(models.Model):
 
     objects = ImageManager()
 
+    def __str__(self):
+        return str(self.hash)
+
     def get_absolute_url(self):
         return reverse('images:detail', kwargs={'pk': self.pk})
 
