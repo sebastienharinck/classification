@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseForbidden
-from django.views.generic import DetailView, ListView, CreateView, FormView, UpdateView
+from django.http import HttpResponse
 from django.shortcuts import reverse
+from django.views.generic import DetailView, ListView, CreateView, FormView, UpdateView, View
+
+from django_pandas.io import read_frame
 
 from .forms import *
 
@@ -87,6 +89,7 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
             obj = f.save(commit=False)
             obj.user = self.request.user
             obj.label = Label.objects.get(pk=self.kwargs.get('label'))
+            obj.bucket = Bucket.objects.get(pk=self.kwargs.get('bucket'))
             obj.save()
 
         return super(VoteByLabelsView, self).form_valid(form)
@@ -162,3 +165,25 @@ class BucketInviteUser(LoginRequiredMixin, UpdateView):
         kwargs = super().get_form_kwargs(*args, **kwargs)
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class BucketStatisticsView(LoginRequiredMixin, DetailView):
+    template_name = 'buckets/bucket_statistics.html'
+    model = Bucket
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['votes'] = Vote.objects.filter(bucket__pk=self.kwargs.get('pk'))
+        return context
+
+
+class BucketStatisticsPandasDataFrameFile(View):
+    def get(self, *args, **kwargs):
+        bucket_pk = kwargs.get('pk')
+        votes = Vote.objects.filter(bucket__pk=bucket_pk)
+        df = read_frame(votes)
+
+        response = HttpResponse(content_type='text/csv', content=df.to_csv())
+        response['Content-Disposition'] = 'attachment; filename="bucket_pandas_dataframe.csv"'
+
+        return response

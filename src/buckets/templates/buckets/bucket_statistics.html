@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>{{ bucket.name }}</h1>
+
+    <a class="btn" href="{% url 'buckets:statistics_download' bucket.id %}">download votes</a>
+
+    <div class="row">
+            <table class="highlight">
+                <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>user</th>
+                      <th>Image</th>
+                      <th>Labels</th>
+                      <th>vote</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for vote in votes %}
+                        <tr>
+                            <td>{{ vote.created_at }}</td>
+                            <td>{{ vote.user }}</td>
+                            <td><a href="{{ vote.image.get_absolute_url }}">{{ vote.image.get_absolute_url }}</a></td>
+                            <td>
+                                <div class="chip">{{ vote.label }}</div>
+                            </td>
+                            <td>
+                                {% if vote.choice %}
+                                    <i class="material-icons green-text">check</i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+{% endblock %}

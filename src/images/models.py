@@ -8,7 +8,7 @@ from django.shortcuts import reverse
 
 from .utils import upload_to
 
-from buckets.models import Label
+from buckets.models import *
 
 
 class ImageManager(models.Manager):
@@ -69,6 +69,7 @@ class Image(models.Model):
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    bucket = models.ForeignKey(Bucket, on_delete=models.CASCADE)
     label = models.ForeignKey('buckets.Label', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     choice = models.BooleanField()

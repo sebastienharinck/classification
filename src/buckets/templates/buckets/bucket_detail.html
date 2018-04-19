@@ -22,6 +22,7 @@
         <div class="row">
             <a class="btn orange" href="{% url 'buckets:images' bucket.id %}"><i class="material-icons left">filter</i>Display images</a>
             <a class="btn orange" href="{% url 'buckets:votes' bucket.id %}"><i class="material-icons left">comment</i>Display votes</a>
+            <a class="btn orange" href="{% url 'buckets:statistics' bucket.id %}"><i class="material-icons left">comment</i>Statistics</a>
         </div>
     {% endif %}
 

@@ -37,12 +37,12 @@ class ImageModelTest(TestCase):
         self.image_4 = Image.objects.create(file='img4.jpg', hash='4444', bucket=self.bucket_2)
 
     def setVotes(self):
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
-        Vote.objects.create(user=self.user_1, image=self.image_2, label=self.label_1, choice=False)
-        Vote.objects.create(user=self.user_1, image=self.image_3, label=self.label_1, choice=False)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_2, bucket=self.bucket_1, label=self.label_1, choice=False)
+        Vote.objects.create(user=self.user_1, image=self.image_3, bucket=self.bucket_1, label=self.label_1, choice=False)
 
-        Vote.objects.create(user=self.user_2, image=self.image_2, label=self.label_2, choice=True)
-        Vote.objects.create(user=self.user_2, image=self.image_3, label=self.label_2, choice=False)
+        Vote.objects.create(user=self.user_2, image=self.image_2, bucket=self.bucket_1, label=self.label_2, choice=True)
+        Vote.objects.create(user=self.user_2, image=self.image_3, bucket=self.bucket_1, label=self.label_2, choice=False)
 
     def setImagesHashes(self):
         self.image_5 = Image.objects.create(file='img5.jpg', hash='5555', bucket=self.bucket_1)
@@ -50,13 +50,13 @@ class ImageModelTest(TestCase):
         self.image_7 = Image.objects.create(file='img7.jpg', hash='5555', bucket=self.bucket_2)
         self.image_8 = Image.objects.create(file='img8.jpg', hash='8888', bucket=self.bucket_2)
 
-        Vote.objects.create(user=self.user_1, image=self.image_5, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_5, bucket=self.bucket_1, label=self.label_1, choice=True)
 
     def test_get_random_image_with_no_vote(self):
         """
         A user who voted on an image with a specific label, will not have this image propose again.
         """
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_1, choice=True)
 
         q = Image.objects.get_samples_with_no_vote(bucket=self.bucket_1, label=self.label_1.id, number=8, user=self.user_1)
         q = q.values_list('id', flat=True)
@@ -67,7 +67,7 @@ class ImageModelTest(TestCase):
         """
         A user who voted on an image with a specific label, will not have this image propose again.
         """
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_2, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_2, choice=True)
 
         q = Image.objects.get_samples_with_no_vote(bucket=self.bucket_1, label=self.label_1.id, number=8, user=self.user_1)
         q = q.values_list('id', flat=True)
@@ -78,7 +78,7 @@ class ImageModelTest(TestCase):
         """
         A user who voted on an image with a specific label, will not have this image propose again.
         """
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_1, choice=True)
 
         # q = Image.objects.get_samples_with_no_vote(bucket=self.bucket_1, label=self.label_1.id, number=8, user=self.user_2)
         # q = q.values_list('id', flat=True)
@@ -126,8 +126,8 @@ class VoteModelTest(TestCase):
         self.image_1 = Image.objects.create(file='img1.jpg', hash='1111', bucket=self.bucket_1)
 
     def test_a_user_cant_vote_twice_on_the_same_image_with_the_same_label(self):
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
-        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, bucket=self.bucket_1, label=self.label_1, choice=True)
 
         self.assertEqual(Vote.objects.count(), 1)
 
