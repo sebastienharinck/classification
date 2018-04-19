@@ -1,6 +1,9 @@
 from django import forms
 from django.forms import modelformset_factory
 from django.forms.formsets import BaseFormSet
+from django.contrib.auth.models import User
+
+from django.db.models import Q
 
 from .models import Bucket, Label
 from images.models import Image, Vote
@@ -65,3 +68,7 @@ class BucketInviteUserForm(forms.ModelForm):
     class Meta:
         model = Bucket
         fields = ['shared_users']
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.get('shared_users').queryset = User.objects.filter(~Q(pk=user.pk))

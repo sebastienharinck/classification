@@ -152,22 +152,15 @@ class VotesListView(LoginRequiredMixin, ListView):
         return context
 
 
-class BucketInviteUser(LoginRequiredMixin, FormView):
+class BucketInviteUser(LoginRequiredMixin, UpdateView):
     template_name = 'buckets/bucket_form.html'
     form_class = BucketInviteUserForm
-
-    def form_valid(self, form):
-        bucket = Bucket.objects.get(pk=self.kwargs.get('pk'), user=self.request.user)
-        form = BucketInviteUserForm(self.request.POST or None, instance=bucket)
-        if form.is_valid():
-            form.save()
-
-        return super().form_valid(form)
+    model = Bucket
 
     def get_success_url(self):
-        return reverse('buckets:list')
+        return reverse('buckets:detail', args=(self.kwargs.get('pk'),))
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['bucket'] = Bucket.objects.get(pk=self.kwargs.get('pk'))
-        return context
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs
