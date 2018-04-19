@@ -48,7 +48,7 @@ class ImageManager(models.Manager):
 
 class Image(models.Model):
     file = models.ImageField(upload_to=upload_to, max_length=133)
-    bucket = models.ForeignKey('buckets.Bucket', on_delete=models.DO_NOTHING)
+    bucket = models.ForeignKey('buckets.Bucket', on_delete=models.CASCADE)
     hash = models.CharField(max_length=128, blank=True, null=True)
 
     objects = ImageManager()
@@ -69,7 +69,7 @@ class Image(models.Model):
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
-    label = models.ForeignKey('buckets.Label', on_delete=models.DO_NOTHING)
+    label = models.ForeignKey('buckets.Label', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     choice = models.BooleanField()
 

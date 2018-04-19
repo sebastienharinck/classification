@@ -77,6 +77,8 @@ class VoteByLabelsView(LoginRequiredMixin, FormView):
         nb_images = Image.objects.filter(bucket=self.kwargs.get('bucket')).count()
         nb_available_votes_on_bucket_by_user = nb_images
         nb_votes = Vote.objects.filter(label=label, user=self.request.user).count()
+        print(nb_votes)
+        print(nb_available_votes_on_bucket_by_user)
         vote_percent_for_the_label = nb_votes / nb_available_votes_on_bucket_by_user
         context['vote_percent_for_the_label'] = round(vote_percent_for_the_label * 100, 2)
         return context
