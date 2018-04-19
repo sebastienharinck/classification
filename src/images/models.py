@@ -75,3 +75,7 @@ class Vote(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not Vote.objects.filter(user=self.user, image=self.image, label=self.label).exists():
+            super().save(*args, **kwargs)

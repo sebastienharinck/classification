@@ -117,6 +117,21 @@ class ImageModelTest(TestCase):
         self.assertEqual(list(user1_label1_images), [4, 8])
 
 
+class VoteModelTest(TestCase):
+    def setUp(self):
+        self.user_1 = User.objects.create_user(username='user1', email='user@example.com', password='userexample')
+        self.project_1 = Project.objects.create(name="Project 1", description='My custom project 1', user=self.user_1)
+        self.label_1 = Label.objects.create(name='Kitchen', project=self.project_1)
+        self.bucket_1 = Bucket.objects.create(name='my bucket', user=self.user_1, project=self.project_1)
+        self.image_1 = Image.objects.create(file='img1.jpg', hash='1111', bucket=self.bucket_1)
+
+    def test_a_user_cant_vote_twice_on_the_same_image_with_the_same_label(self):
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+        Vote.objects.create(user=self.user_1, image=self.image_1, label=self.label_1, choice=True)
+
+        self.assertEqual(Vote.objects.count(), 1)
+
+
 class UploadImageTest(TestCase):
     def setUp(self):
         self.setUsers()
